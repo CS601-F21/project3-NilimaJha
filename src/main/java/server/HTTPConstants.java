@@ -8,6 +8,7 @@ public class HTTPConstants {
     public static final String OK = "200 OK";
     public static final String NOT_FOUND = "404 Not Found";
     public static final String NOT_ALLOWED = "405 Method Not Allowed";
+    public static final String SERVER_ERROR = "500 Internal Server Error";
 
     public static final String CONTENT_LENGTH = "Content-Length:";
     public static final String CONNECTION_CLOSE = "Connection: close";
