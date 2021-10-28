@@ -1,4 +1,7 @@
-package server;
+package handler;
+
+import server.HTTPRequest;
+import server.HTTPResponse;
 
 /**
  * Handler Interface

@@ -1,4 +1,9 @@
-package server;
+package handler;
+
+import handler.Handler;
+import server.HTTPConstants;
+import server.HTTPRequest;
+import server.HTTPResponse;
 
 public class BadRequestHandler implements Handler {
 

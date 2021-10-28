@@ -1,5 +1,7 @@
 package server;
 
+import handler.Handler;
+
 public class InternalServerErrorHandler implements Handler {
 
     @Override
