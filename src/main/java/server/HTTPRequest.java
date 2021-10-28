@@ -1,8 +1,10 @@
 package server;
 
+
 import java.util.HashMap;
 
 public class HTTPRequest {
+
     private String method;
     private String path;
     private String protocol;

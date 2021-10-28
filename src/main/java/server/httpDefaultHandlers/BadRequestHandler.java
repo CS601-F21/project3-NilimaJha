@@ -1,4 +1,4 @@
-package handler;
+package server.httpDefaultHandlers;
 
 import handler.Handler;
 import org.apache.log4j.LogManager;

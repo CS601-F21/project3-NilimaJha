@@ -19,7 +19,7 @@ public class HTTPConstants {
     public static final String MESSAGE_BAD_REQUEST = "Bad Request";
 
     public static final String CONTENT_LENGTH = "Content-Length:";
-    public static final String CONNECTION_CLOSE = "Connection: close";
+    public static final String CONNECTION_CLOSE = "Connection: closed";
 
 
     public static final String NOT_FOUND_PAGE = "<!DOCTYPE html>\n" +

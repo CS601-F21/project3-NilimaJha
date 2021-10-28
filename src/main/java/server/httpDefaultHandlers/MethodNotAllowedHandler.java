@@ -1,9 +1,9 @@
-package handler;
+package server.httpDefaultHandlers;
 
 
+import handler.Handler;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import server.HTTPConnection;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;

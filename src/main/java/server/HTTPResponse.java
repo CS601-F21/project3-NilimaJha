@@ -13,7 +13,8 @@ public class HTTPResponse {
     }
 
     public String getResponseHeader() {
-        return protocol + " " + statusCode + " " + statusMessage + "\n" + HTTPConstants.CONNECTION_CLOSE + "\r\n";
+        //return protocol + " " + statusCode + " " + statusMessage + "\n" + HTTPConstants.CONNECTION_CLOSE + "\r\n";
+        return protocol + " " + statusCode + " " + statusMessage + "\n\r\n";
     }
 
     public void setResponseMessage(String responseMessage) {
