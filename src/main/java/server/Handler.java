@@ -6,5 +6,5 @@ package server;
  * @author nilimajha
  */
 public interface Handler {
-    public HTTPResponse handle(HTTPRequest httpRequest);
+    public HTTPResponse handle (HTTPRequest httpRequest);
 }
