@@ -1,5 +1,8 @@
 package server;
 
+import handler.BadRequestHandler;
+import handler.Handler;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
