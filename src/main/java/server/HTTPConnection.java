@@ -15,6 +15,7 @@ public class HTTPConnection implements Runnable {
 
     private Socket connectionChannel;
     private HashMap<String, Handler> pathToHandlerMap;
+    private String validPostQueryKey;
 
     public HTTPConnection(Socket connectionChannel, HashMap<String, Handler>pathToHandlerMap) {
         this.connectionChannel = connectionChannel;
@@ -136,6 +137,13 @@ public class HTTPConnection implements Runnable {
 //            System.out.println("[Thread # " + threadId + "]: "+ "METHOD: " + method);
             String path = httpRequest.getPath();
 //            System.out.println("[Thread # " + threadId + "]: "+ "PATH: " + path);
+            if (path.equals("/find")) {
+                this.validPostQueryKey = "asin=";
+            } else if (path.equals("/reviewsearch")) {
+                this.validPostQueryKey = "query=" ;
+            } else if(path.equals("/slackbot")) {
+                this.validPostQueryKey = "message=" ;
+            }
 
             if(!(method.equals(HTTPConstants.GET) || method.equals(HTTPConstants.POST))) {
                 LOGGER.info("Request Method (" + method + ") is not supported!");
@@ -197,7 +205,7 @@ public class HTTPConnection implements Runnable {
     }
 
     private boolean queryIsValid (String query) {
-        if (HTTPConstants.VALID_POST_QUERY.contains(query)) {
+        if (this.validPostQueryKey.equals(query)) {
             return true;
         } else {
             return false;
