@@ -53,7 +53,7 @@ public class HTTPConnection implements Runnable {
         String threadId = Thread.currentThread().getName();
         LOGGER.info("Reading Request of Client :" + this.connectionChannel);
 //        LOGGER.info("[Thread # " + threadId + "]: Inside readRequest method.");
-//        System.out.println("[Thread # " + threadId + "]: "+ "Inside ReadRequest method.");
+        System.out.println("[Thread # " + threadId + "]: "+ "Inside ReadRequest method.");
         HTTPRequest httpRequest = new HTTPRequest();
         String[] HTTPRequestLineArray;
         String currentLine;
@@ -67,16 +67,15 @@ public class HTTPConnection implements Runnable {
 //            // if first line is null skipping that line.
 //            currentLine = instream.readLine();
 //        }
-//        System.out.println("[There Thread # " + threadId + "]: "+  currentLine);
+        System.out.println("[There Thread # " + threadId + "]: "+  currentLine);
 
         if(currentLine != null){
-
             HTTPRequestLineArray = currentLine.split("\\s");
-//            System.out.println("[Thread # " + threadId + "]: "+ "=========");
-//            for(String s : HTTPRequestLineArray){
-//                System.out.println("[Thread # " + threadId + "]: "+ s);
-//            }
-//            System.out.println("[Thread # " + threadId + "]: "+ "=========");
+            System.out.println("[Thread # " + threadId + "]: "+ "=========");
+            for(String s : HTTPRequestLineArray){
+                System.out.println("[Thread # " + threadId + "]: "+ s);
+            }
+            System.out.println("[Thread # " + threadId + "]: "+ "=========");
 
             //validating request and extracting required info.
             if(requestLineValidator(HTTPRequestLineArray)) {
@@ -86,28 +85,31 @@ public class HTTPConnection implements Runnable {
             } else {
                 httpRequest.setIsValid(false);
             }
-            previousLine = HTTPRequestLineArray;
+
             currentLine = instream.readLine();
             while (currentLine != null && currentLine.length() != 0 ) {
-//                System.out.println("[Thread # " + threadId + "]: " +  "FOR current HEADER LINE>>: " + currentLine);
+                System.out.println("[Thread # " + threadId + "]: " +  "FOR current HEADER LINE>>: " + currentLine);
                 String[] HTTPRequestHeader = currentLine.split(":\\s");
                 if (requestHeaderLineValidator(HTTPRequestHeader)) {
                     httpRequest.putRequestHeaders(HTTPRequestHeader[0], HTTPRequestHeader[1]);
                 } else {
                     httpRequest.setIsValid(false);
                 }
-                previousLine = HTTPRequestHeader;
                 currentLine = instream.readLine();
             }
 //            System.out.println("[Thread # " + threadId + "]: "+  "FOR LAST LINE: " + currentLine);
             // checking if previousLine was content-length line
-            if (previousLine[0].equals("Content-length:")) {
-                int contentLength = Integer.parseInt (previousLine[1]);
+//            if (previousLine[0].equals("Content-length:")) {
+            if (httpRequest.getRequestHeaders().containsKey("Content-Length")) {
+                int contentLength = Integer.parseInt (httpRequest.getRequestHeaders().get("Content-Length"));
                 LOGGER.info("Request contain Message of length : " + contentLength);
+                System.out.println("Request contain Message of length : " + contentLength);
                 char[] bodyArray = new char[contentLength];
                 instream.read (bodyArray, 0, bodyArray.length);
-                httpRequest.setMessage(new String (bodyArray));
-                LOGGER.info("Request Message Body :" + httpRequest.getMessage());
+                httpRequest.setRequestPayload(new String (bodyArray));
+                System.out.println(httpRequest.getRequestPayload());
+                LOGGER.info("Request Message Body :" + httpRequest.getRequestPayload());
+                System.out.println("Request Message Body :" + httpRequest.getRequestPayload());
             }
         } else {
 //            System.out.println("[Thread # " + threadId + "]: "
@@ -135,11 +137,17 @@ public class HTTPConnection implements Runnable {
             String path = httpRequest.getPath();
 //            System.out.println("[Thread # " + threadId + "]: "+ "PATH: " + path);
 
-            if(!(method.equals(HTTPConstants.GET) || method.equals(HTTPConstants.PROTOCOL))) {
+            if(!(method.equals(HTTPConstants.GET) || method.equals(HTTPConstants.POST))) {
                 LOGGER.info("Request Method (" + method + ") is not supported!");
                 LOGGER.info("Assigning the request to MethodNotAllowedHandler.");
 //                System.out.println("[Thread # " + threadId + "]: "+ "INVALID METHOD: " + method);
                 httpResponse = new MethodNotAllowedHandler().handle(httpRequest);
+            } else if (method.equals(HTTPConstants.POST) && !requestPayloadValidator(httpRequest.getRequestPayload())) {
+                String httpRequestPayload = httpRequest.getRequestPayload();
+                String query = httpRequestPayload.substring(0,httpRequestPayload.indexOf("=") + 1);
+                LOGGER.info("Request Query (" + httpRequestPayload + ")is not valid!");
+                LOGGER.info("Assigning the request to BadRequestHandler.");
+                httpResponse = new BadRequestHandler().handle(httpRequest);
             } else if (!pathToHandlerMap.containsKey(path)) {
                 LOGGER.info("Request Path (" + path + ") is not valid!");
                 LOGGER.info("Assigning the request to BadRequestHandler.");
@@ -160,7 +168,6 @@ public class HTTPConnection implements Runnable {
     }
 
 
-
     public boolean requestLineValidator (String[] HTTPRequestArray) {
         if (HTTPRequestArray.length == 3 && HTTPRequestArray[2].equals(HTTPConstants.PROTOCOL)) {
             return true;
@@ -169,21 +176,32 @@ public class HTTPConnection implements Runnable {
     }
 
     public boolean requestHeaderLineValidator (String[] HTTPRequestHeader) {
-//        String threadId = Thread.currentThread().getName();
-
-//        System.out.println("[Thread # " + threadId + "]: " +"i++++++++++++++++++");
-//        System.out.println("[Thread # " + threadId + "]: " +"LENGTH: " + HTTPRequestHeader.length );
-//        for(String s :HTTPRequestHeader){
-//            System.out.println("[Thread # " + threadId + "]: " + s);
-//        }
         if (HTTPRequestHeader.length == 2) {
-//            System.out.println("[Thread # " + threadId + "]: " + " TRUE ");
-//            System.out.println("[Thread # " + threadId + "]: " +"0++++++++++++++++++");
             return true;
         }
-//        System.out.println("[Thread # " + threadId + "]: " +" FALSE ");
-//        System.out.println("[Thread # " + threadId + "]: " +"0++++++++++++++++++");
         return false;
+    }
+
+    private boolean requestPayloadValidator (String httpRequestMessage) {
+        if (httpRequestMessage.contains("=")) {
+            String query = httpRequestMessage.substring(0,httpRequestMessage.indexOf("=") + 1);
+            String requestTerm = httpRequestMessage.substring(httpRequestMessage.indexOf("=") + 1);
+            if (queryIsValid(query) && requestTerm.length() != 0 ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private boolean queryIsValid (String query) {
+        if (HTTPConstants.VALID_POST_QUERY.contains(query)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
