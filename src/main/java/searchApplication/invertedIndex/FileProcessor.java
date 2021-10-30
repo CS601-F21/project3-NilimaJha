@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DataStructureBuilder {
+public class FileProcessor {
 
     /**
      * method reviewFileProcessor()
