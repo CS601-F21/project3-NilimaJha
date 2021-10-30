@@ -3,7 +3,7 @@ package searchApplication.invertedIndex;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ReviewFileDataStructure {
+public class ReviewFileData {
     private InvertedIndex InvertedIndex = new InvertedIndex();
     private HashMap<String, ArrayList<Review>> asinReviewMap = new HashMap<>();
     private ArrayList<Review> reviewList = new ArrayList<>();

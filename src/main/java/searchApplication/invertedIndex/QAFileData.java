@@ -3,7 +3,7 @@ package searchApplication.invertedIndex;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class QAFileDataStructure {
+public class QAFileData {
     private InvertedIndex InvertedIndex = new InvertedIndex();
     private HashMap<String, ArrayList<QA>> asinQAMap = new HashMap<>();
     private ArrayList<QA> qaList = new ArrayList<>();
