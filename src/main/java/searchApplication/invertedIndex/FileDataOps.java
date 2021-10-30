@@ -3,15 +3,14 @@ package searchApplication.invertedIndex;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DataOperations {
+public class FileDataOps {
     private ReviewFileData reviewFileData;
     private QAFileData qaFileData;
     private String alphanumeric = "^[A-Za-z0-9]*$";  // Common expression to check
-    private String separator = "+".repeat(100) ;     // Using to separate outputs
+    private String separator = "\n" + "=".repeat(100) + "\n" ;  // Using to separate outputs
 
-
-    public DataOperations(ReviewFileData reviewFileData,
-                          QAFileData qaFileData) {
+    public FileDataOps(ReviewFileData reviewFileData,
+                       QAFileData qaFileData) {
 
         this.reviewFileData = reviewFileData;
         this.qaFileData = qaFileData;
@@ -27,37 +26,47 @@ public class DataOperations {
      *
      * @param asin Product's ASIN
      */
-
-
     public String findAsin(String asin) {
         StringBuilder findAsinResult = new StringBuilder();
-//        findAsinResult.append("ASIN : " + asin + "\n\n");
 
         // Validating the ASIN entered by User.
-        if (!asin.matches(alphanumeric)) {
-            findAsinResult.append("Invalid ASIN. Please enter a valid ASIN.\n");
+        if (!asin.matches(alphanumeric) || asin.length() == 0) {
+            findAsinResult.append(this.separator);
+            findAsinResult.append("Invalid ASIN. Please enter a valid ASIN.");
+            findAsinResult.append(this.separator);
         }else {
             if (!this.reviewFileData.getAsinReviewMap().containsKey(asin) && !this.qaFileData.getAsinQAMap().containsKey(asin)) {
-                findAsinResult.append("No Reviews or QA associated with the ASIN: " + asin + "\n");
+                findAsinResult.append(this.separator);
+                findAsinResult.append("No Reviews or QA associated with the ASIN: " + asin );
+                findAsinResult.append(this.separator);
+
             }else {
                 if(this.reviewFileData.getAsinReviewMap().containsKey(asin)) {
-                    findAsinResult.append("List of all ReviewText for ASIN: " + asin + "\n");
+                    findAsinResult.append(this.separator);
+                    findAsinResult.append("List of all ReviewText for ASIN: " + asin );
+                    findAsinResult.append(this.separator);
                     //printing the reviewText of the Review object associated with the entered ASIN.
                     for(Review currentReviewObj: this.reviewFileData.getAsinReviewMap().get(asin)) {
-                        findAsinResult.append("\nReviewText: " + currentReviewObj.getReviewText() + "\n");
+                        findAsinResult.append("ReviewText: " + currentReviewObj.getReviewText() + "\n\n");
                     }
                 }else {
-                    findAsinResult.append("No Reviews associated with the ASIN: " + asin + "\n\n");
+                    findAsinResult.append(this.separator);
+                    findAsinResult.append("No Reviews associated with the ASIN: " + asin );
+                    findAsinResult.append(this.separator);
                 }
                 if(this.qaFileData.getAsinQAMap().containsKey(asin)) {
-                    findAsinResult.append("\nList of all Question/Answer for ASIN: " + asin + "\n\n");
+                    findAsinResult.append(this.separator);
+                    findAsinResult.append("List of all Question/Answer for ASIN: " + asin );
+                    findAsinResult.append(this.separator);
                     for (QA currentQAObj : this.qaFileData.getAsinQAMap().get(asin)) {
                         //printing the question and answer of the QAObject associated with the entered ASIN.
                         findAsinResult.append("Question : " + currentQAObj.getQuestion() + "\n");
                         findAsinResult.append("Answer : " + currentQAObj.getAnswer() + "\n\n");
                     }
                 }else {
-                    findAsinResult.append("No QA associated with the ASIN: " + asin + "\n");
+                    findAsinResult.append(this.separator);
+                    findAsinResult.append("No QA associated with the ASIN: " + asin );
+                    findAsinResult.append(this.separator);
                 }
             }
         }
@@ -71,31 +80,32 @@ public class DataOperations {
      *
      * @param word  word from reviewText of the review file.
      */
-    private void reviewSearch(String word) {
-        System.out.println(this.separator);
+    public String reviewSearch(String word) {
+        StringBuilder reviewSearchResult = new StringBuilder();
+//        System.out.println(this.separator);
 
         if (word.matches(this.alphanumeric)) {
             // Storing DocIDs of all the reviews that contains the word.
             ArrayList<Integer> docIDs = this.reviewFileData.getInvertedIndex().getDocIDsForWord(word);
             if (docIDs.size() != 0){
-                int counter = 1;
-                System.out.println("Following are the Reviews containing word: '" + word + "'");
-                System.out.println(this.separator);
+                reviewSearchResult.append(this.separator);
+                reviewSearchResult.append("Following are the Reviews containing word: '" + word + "'");
+                reviewSearchResult.append(this.separator);
                 //printing reviewText of DocIDs
                 for (int docID : docIDs) {
-                    System.out.println("\n" + counter);
-                    System.out.println("ReviewText: " + this.reviewFileData.getReviewList().get(docID).getReviewText());
-                    counter++;
+                    String reviewText = this.reviewFileData.getReviewList().get(docID).getReviewText();
+                    reviewSearchResult.append("ReviewText: " + reviewText + "\n\n");
                 }
             } else {
-                System.out.println("No Available Reviews contains word: '" + word + "'");
+                reviewSearchResult.append(this.separator);
+                reviewSearchResult.append("No Available Reviews contains word: '" + word + "'");
             }
         }else {
-            System.out.println("Invalid search word: '"
-                    + word
-                    +"', Please remove all non-alphanumeric characters.");
+            reviewSearchResult.append(this.separator);
+            reviewSearchResult.append("Invalid search term: '" + word + "', Please enter alphanumeric term only.");
+            reviewSearchResult.append(this.separator);
         }
-        System.out.println(this.separator);
+        return String.valueOf(reviewSearchResult);
     }
 
     /**
