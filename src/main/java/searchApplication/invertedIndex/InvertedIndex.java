@@ -1,4 +1,4 @@
-package searchApplication;
+package searchApplication.invertedIndex;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,5 +108,17 @@ public class InvertedIndex {
         }
         Collections.sort(partialWordDocIDs);
         return partialWordDocIDs;
+    }
+
+    public boolean containsKey (String key) {
+        if (wordDocMap.containsKey(key)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public HashMap<Integer, Integer> get (String key) {
+        return wordDocMap.get(key);
     }
 }
