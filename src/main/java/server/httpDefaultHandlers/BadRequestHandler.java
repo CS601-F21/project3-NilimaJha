@@ -8,7 +8,7 @@ import server.HTTPRequest;
 import server.HTTPResponse;
 
 public class BadRequestHandler implements Handler {
-    private static final Logger LOGGER = LogManager.getLogger(MethodNotAllowedHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(BadRequestHandler.class);
 
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
@@ -25,7 +25,7 @@ public class BadRequestHandler implements Handler {
                 "</head>\n" +
                 "<body>\n" +
                 "\n" +
-                "  <p>The Request made is not correct.</p>\n" +
+                "  <p>Bad Request!</p>\n" +
                 "\n" +
                 "</body>\n" +
                 "</html>";
