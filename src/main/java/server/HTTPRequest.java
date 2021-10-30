@@ -9,7 +9,7 @@ public class HTTPRequest {
     private String path;
     private String protocol;
     private HashMap<String, String> requestHeaders =new HashMap<>();
-    private String message;
+    private String requestPayload;
     private boolean isValid = true;
 
     public String getMethod() {
@@ -28,8 +28,8 @@ public class HTTPRequest {
         return requestHeaders;
     }
 
-    public String getMessage() {
-        return message;
+    public String getRequestPayload() {
+        return requestPayload;
     }
 
     public boolean getIsValid() {
@@ -52,8 +52,8 @@ public class HTTPRequest {
         this.requestHeaders.put(header, value);
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setRequestPayload(String requestPayload) {
+        this.requestPayload = requestPayload;
     }
 
     public void setIsValid(boolean isValid) {
