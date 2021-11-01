@@ -27,7 +27,7 @@ public class MethodNotAllowedHandler implements Handler {
                 "</head>\n" +
                 "<body>\n" +
                 "\n" +
-                "  <p>Method Not Allowed.</p>\n" +
+                "  <p>405 Method Not Allowed.</p>\n" +
                 "\n" +
                 "</body>\n" +
                 "</html>";

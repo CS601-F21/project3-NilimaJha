@@ -17,6 +17,9 @@ public class HTTPConstants {
     public static final String CODE_NOT_ALLOWED = "405";
     public static final String MESSAGE_NOT_ALLOWED = "Method Not Allowed";
 
+    public static final String CODE_NOT_FOUND = "404";
+    public static final String MESSAGE_NOT_FOUND = "Not Found";
+
 
     public static final String CODE_BAD_REQUEST = "400";
     public static final String MESSAGE_BAD_REQUEST = "Bad Request";
