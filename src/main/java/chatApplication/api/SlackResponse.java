@@ -1,2 +1,5 @@
-package chatApplication.api;public class SlackResponse {
+package chatApplication.api;
+
+public class SlackResponse {
+
 }
