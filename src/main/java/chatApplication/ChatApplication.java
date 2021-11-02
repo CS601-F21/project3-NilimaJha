@@ -6,6 +6,8 @@ import server.HTTPServer;
 public class ChatApplication {
     public static void main(String[] args) {
         HTTPServer httpServer = new HTTPServer(1027);
+        System.out.println(">>>>>>> B4 SlackBotHandler");
+
         httpServer.addMapping("/slackbot", new SlackBotHandler());
         System.out.println();
         System.out.println("Test server starting.");

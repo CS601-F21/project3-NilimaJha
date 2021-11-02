@@ -2,6 +2,7 @@ package server;
 
 import server.httpDefaultHandlers.BadRequestHandler;
 import handler.Handler;
+import server.httpDefaultHandlers.FileNotFoundHandler;
 import server.httpDefaultHandlers.MethodNotAllowedHandler;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -37,6 +38,7 @@ public class HTTPConnection implements Runnable {
                         (connectionChannel.getOutputStream())) {
 //            System.out.println("[Thread # " + threadId + "]: "+ "inputStreamReader and outputStreamReader initialized.");
             HTTPRequest httpRequest = readRequest(inStreamReader);
+            System.out.println("[Thread # " + threadId + "]: "+ "Returned to run method on HTTPConnection class and now assigning request to appropriate handler.");
             pathHandlerAssigner(httpRequest, outStreamWriter);
         } catch (IOException e) {
             LOGGER.error("[Thread # " + threadId + "]: " + "IN CATCH IOException: " + e);
@@ -52,7 +54,7 @@ public class HTTPConnection implements Runnable {
 
     public HTTPRequest readRequest(BufferedReader instream) throws IOException {
         String threadId = Thread.currentThread().getName();
-        LOGGER.info("Reading Request of Client :" + this.connectionChannel);
+        LOGGER.info("[Thread # " + threadId + "]: " + "Reading Request of Client :" + this.connectionChannel);
 //        LOGGER.info("[Thread # " + threadId + "]: Inside readRequest method.");
         System.out.println("[Thread # " + threadId + "]: "+ "Inside ReadRequest method.");
         HTTPRequest httpRequest = new HTTPRequest();
@@ -104,13 +106,13 @@ public class HTTPConnection implements Runnable {
             if (httpRequest.getRequestHeaders().containsKey("Content-Length")) {
                 int contentLength = Integer.parseInt (httpRequest.getRequestHeaders().get("Content-Length"));
                 LOGGER.info("Request contain Message of length : " + contentLength);
-                System.out.println("Request contain Message of length : " + contentLength);
+                System.out.println("[ Thread # "+ threadId +" ]: Inside readRequest method of class HTTPConnection and payload length : " + contentLength);
                 char[] bodyArray = new char[contentLength];
                 instream.read (bodyArray, 0, bodyArray.length);
                 httpRequest.setRequestPayload(new String (bodyArray));
-                System.out.println(httpRequest.getRequestPayload());
+                System.out.println("[ Thread # " + threadId + " ]: Inside readRequest method of class HTTPConnection and payload value is: "+httpRequest.getRequestPayload());
                 LOGGER.info("Request Message Body :" + httpRequest.getRequestPayload());
-                System.out.println("Request Message Body :" + httpRequest.getRequestPayload());
+                //System.out.println("Request Message Body :" + httpRequest.getRequestPayload());
             }
         } else {
 //            System.out.println("[Thread # " + threadId + "]: "
@@ -122,6 +124,7 @@ public class HTTPConnection implements Runnable {
 
 
     public void pathHandlerAssigner(HTTPRequest httpRequest, PrintWriter writer) {
+        String threadId = Thread.currentThread().getName();
 //        String threadId = Thread.currentThread().getName();
 //        LOGGER.info("[Thread # " + threadId + "]: "+ "Assigning appropriate Handler.");
 //        System.out.println("[Thread # " + threadId + "]: "+ "Assigning appropriate Handler.");
@@ -146,28 +149,34 @@ public class HTTPConnection implements Runnable {
             }
 
             if(!(method.equals(HTTPConstants.GET) || method.equals(HTTPConstants.POST))) {
+                System.out.println("[Thread # " + threadId + "]: "+ "********1");
                 LOGGER.info("Request Method (" + method + ") is not supported!");
                 LOGGER.info("Assigning the request to MethodNotAllowedHandler.");
 //                System.out.println("[Thread # " + threadId + "]: "+ "INVALID METHOD: " + method);
                 httpResponse = new MethodNotAllowedHandler().handle(httpRequest);
             } else if (method.equals(HTTPConstants.POST) && !requestPayloadValidator(httpRequest.getRequestPayload())) {
+                System.out.println("[Thread # " + threadId + "]: "+ "********2");
+
                 String httpRequestPayload = httpRequest.getRequestPayload();
                 String query = httpRequestPayload.substring(0,httpRequestPayload.indexOf("=") + 1);
                 LOGGER.info("Request Query (" + httpRequestPayload + ")is not valid!");
-                LOGGER.info("Assigning the request to BadRequestHandler.");
-                httpResponse = new BadRequestHandler().handle(httpRequest);
+                LOGGER.info("Assigning the request to FileNotFoundHandler.");
+                httpResponse = new FileNotFoundHandler().handle(httpRequest);
             } else if (!pathToHandlerMap.containsKey(path)) {
+                System.out.println("[Thread # " + threadId + "]: "+ "********3");
+
                 LOGGER.info("Request Path (" + path + ") is not valid!");
-                LOGGER.info("Assigning the request to BadRequestHandler.");
+                LOGGER.info("Assigning the request to FileNotFoundHandler.");
 //                System.out.println("[Thread # " + threadId + "]: "+ "INVALID PATH: " + path);
-                httpResponse = new BadRequestHandler().handle(httpRequest);
+                httpResponse = new FileNotFoundHandler().handle(httpRequest);
             } else {
+                System.out.println("[Thread # " + threadId + "]: "+ "********4");
                 LOGGER.info("Request is valid!");
-                LOGGER.info("Assigning the request to " + pathToHandlerMap.get(path).handle(httpRequest).getClass());
 //                System.out.println("[Thread # " + threadId + "]: "+ "VALID CALL ");
                 httpResponse = pathToHandlerMap.get(path).handle(httpRequest);
             }
         }
+        System.out.println("[Thread # " + threadId + "]: "+ "********5 out");
         //testing if the response in valid i.e. correctly formatted.
         LOGGER.info("Sending Response to the Client!");
         LOGGER.info("Response to be sent : ");
