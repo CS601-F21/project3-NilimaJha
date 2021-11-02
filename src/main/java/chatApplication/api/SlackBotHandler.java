@@ -1,20 +1,20 @@
 package chatApplication.api;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import handler.Handler;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,11 +22,10 @@ public class SlackBotHandler implements Handler {
 
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
-        if (httpRequest.getMethod().equals(HTTPConstants.GET)) {
-            return doGet();
-        } else {
-           // return doPost(httpRequest.getRequestPayload());
+        if (httpRequest.getMethod().equals(HTTPConstants.POST)) {
             return doPost(httpRequest.getRequestPayload());
+        } else {
+            return doGet();
         }
     }
 
@@ -60,28 +59,50 @@ public class SlackBotHandler implements Handler {
     }
 
     public HTTPResponse doPost(String httpRequestMessage) {
+        String threadId = Thread.currentThread().getName();
+        System.out.println("[Thread # " + threadId + "]: " + "in doPost()");
+
+//            Gson gson = new Gson();
+//
+//        Token tokenObject = null;
+//        try {
+//            tokenObject = gson.fromJson(new FileReader("token.json"), Token.class);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            System.exit(1);
+//        }
+//
+//        String token = tokenObject.getToken();
+
+        String bodyValue = null;
+        try {
+            System.out.println("Decoding the message. =" +httpRequestMessage);
+            bodyValue = URLDecoder.decode(httpRequestMessage.substring(httpRequestMessage.indexOf("=")+1, httpRequestMessage.length()), StandardCharsets.UTF_8.toString());
+            System.out.println("Decoded message.= " +bodyValue);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //String message = URLDecoder.decode(httpRequestMessage, )
+
 
         String token = "xoxb-2464212157-2698004405792-VHX1nJ2jZkHuBUSTYHbPJhbD";
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " +token);
-        System.out.println("================================");
-        System.out.println(headers.get("Authorization"));
-        System.out.println("================================");
-
         headers.put("Content-Type", "application/json");
         headers.put("Accept-Charset", "utf-8");
         //headers.put("Connection", "close");
-        System.out.println("Size of header Map: "+headers.size());
+
         String url = "https://slack.com/api/chat.postMessage";
-        JsonObject obj = new JsonObject();
-        obj.addProperty("channel", "C02KR8EDTNZ");
-        obj.addProperty("text", httpRequestMessage);
-        String body = obj.toString();
-        System.out.println("+++++++++++++++++++++++++++++++++++");
-        System.out.println(body);
+        JsonObject requestBody = new JsonObject();
+        requestBody.addProperty("channel", "C02KR8EDTNZ");
+        requestBody.addProperty("text", bodyValue);
+        String body = requestBody.toString();
+        System.out.println("[Thread # " + threadId + "]: " + "i~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         String slackPostResponse = doPostOnSlack(url, headers, body);
+
         //parse response;
-        System.out.println(slackPostResponse);
+        System.out.println("[Thread # " + threadId + "]: " + slackPostResponse);
+        System.out.println("[Thread # " + threadId + "]: " + "o~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         String responseProtocol = HTTPConstants.PROTOCOL;
         String responseStatusCode = HTTPConstants.CODE_OK;
@@ -95,7 +116,7 @@ public class SlackBotHandler implements Handler {
                 "<body>\n" +
                 "\n" +
                 "<h1><u>Slack Bot</u></h1>" +
-                "<p> Inside doPost of SlackBot!" +
+                "<p> Message successfully posted on slack channel!" +
                 "\n" +
                 "</body>\n" +
                 "</html>";
@@ -106,61 +127,30 @@ public class SlackBotHandler implements Handler {
 
     public static String doPostOnSlack(String url, Map<String, String> headers, String body) {
         try {
-            System.out.println("Inside do post method");
             HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(url));
-            System.out.println("Created Builder.");
-            System.out.println("Size of header Map before sending it to setHeaders method: "+headers.size());
             builder = setHeaders(builder, headers);
-            System.out.println("Header Set.");
             HttpRequest request = builder.POST((HttpRequest.BodyPublishers.ofString(body))).build();
-            System.out.println("Set method as Post in request.");
-            System.out.println("--------->" + request.method());
-            System.out.println("--------->" + request.headers());
-            System.out.println("--------->" + request.uri());
-            System.out.println("--------->" + request.bodyPublisher());
-
             HttpClient client = HttpClient.newHttpClient();
-            System.out.println("Sending the request to slack.");
-            //System.out.println("HttpResponse.BodyHandlers.ofString() :" + HttpResponse.BodyHandlers.ofString());
+            System.out.println("B4 send");
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            System.out.println("-.-.-.-.-.-.-.-.->Body      "+response.body());
-            System.out.println("-.-.-.-.-.-.-.-.->uri       "+response.uri());
-            System.out.println("-.-.-.-.-.-.-.-.->SC        "+response.statusCode());
-
+            System.out.println("after send");
             return response.body();
-
         } catch(URISyntaxException | IOException | InterruptedException e) {
             System.err.println(e.getMessage());
             return null;
         }
-
     }
 
-
     private static HttpRequest.Builder setHeaders (HttpRequest.Builder builder, Map < String, String > headers){
-        System.out.println("Inside setHeaders method.");
-        System.out.println("Size of header Map: "+headers.size());
         if (headers != null) {
-            System.out.println("header map provided is not null.");
-            int i = 1;
             for (String key : headers.keySet()) {
-                System.out.println(i +"Headers key:" +key);
                 builder = builder.setHeader(key, headers.get(key));
-                System.out.println("Headers value:" +headers.get(key));
-                i++;
             }
-            System.out.println("Header set done.");
         }
-        System.out.println("returning builder object");
         return builder;
     }
 
     private String parseSlackResponse (String slackPostResponse) {
-//        if (slackPostResponse.contains("ok")) {
-//
-//        }
-        //String channel =
         return slackPostResponse;
     }
 }
