@@ -20,13 +20,11 @@ public class HTTPConstants {
     public static final String CODE_NOT_FOUND = "404";
     public static final String MESSAGE_NOT_FOUND = "Not Found";
 
-
     public static final String CODE_BAD_REQUEST = "400";
     public static final String MESSAGE_BAD_REQUEST = "Bad Request";
 
-//    public static final List<String> VALID_POST_QUERY = Arrays.asList("asin=", "message=", "query=");
-
     public static final String CONTENT_LENGTH = "Content-Length:";
     public static final String CONNECTION_CLOSE = "Connection: closed";
+
 
 }
