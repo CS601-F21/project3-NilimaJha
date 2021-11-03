@@ -1,6 +1,8 @@
 package searchApplication.api;
 
 import handler.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import searchApplication.invertedIndex.*;
 import server.HTTPConstants;
 import server.HTTPRequest;
@@ -8,22 +10,21 @@ import server.HTTPResponse;
 
 
 /**
- *
+ * FileHandler class implements Handler Interface
+ * and handles httpRequest to SearchApplication Server with path /find
  * @author nilimajha
  */
 public class FindHandler implements Handler {
-//    private ReviewFileData reviewFileData;
-//    private QAFileData qaFileData;
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(FindHandler.class);
 
-
-//    public FindHandler (ReviewFileData reviewInvertedIndex, QAFileData qaInvertedIndex) {
-////        this.reviewFileData = reviewInvertedIndex;
-////        this.qaFileData = qaInvertedIndex;
-//    }
-
+    /**
+     * method handle() handles
+     * /find request by calling doGet() or doPost() appropriately.
+     * @param httpRequest
+     * @return
+     */
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
-
         if (httpRequest.getMethod().equals(HTTPConstants.GET)) {
             return doGet();
         } else {
@@ -31,6 +32,11 @@ public class FindHandler implements Handler {
         }
     }
 
+    /**
+     * doGet() handles GET request made to /find
+     *
+     * @return send a form to enter asin number.
+     */
     public HTTPResponse doGet() {
         String responseProtocol = HTTPConstants.PROTOCOL;
         String responseStatusCode = HTTPConstants.CODE_OK;
@@ -40,6 +46,12 @@ public class FindHandler implements Handler {
         return httpResponse;
     }
 
+    /**
+     * generateHTMLResponseForGET() method
+     * returns body of response for GET request to /find.
+     *
+     * @return HTMLResponseMessage
+     */
     private String generateHTMLResponseForGET() {
         String HTMLResponseMessage = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
@@ -60,6 +72,12 @@ public class FindHandler implements Handler {
         return HTMLResponseMessage;
     }
 
+    /**
+     * handles POST request on /find by extracting the result fo the search.
+     * and Returns response in HTML format to display the result of the asin search.
+     * @param httpRequestMessage
+     * @return
+     */
     public HTTPResponse doPost(String httpRequestMessage) {
 
         String responseProtocol = HTTPConstants.PROTOCOL;
@@ -73,6 +91,12 @@ public class FindHandler implements Handler {
         return httpResponse;
     }
 
+    /**
+     * generateHTMLResponseForPOST() response to be sent in HTML format.
+     * @param title
+     * @param body
+     * @return
+     */
     private String generateHTMLResponseForPOST(String title, String body) {
         String HTMLResponseMessage = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +

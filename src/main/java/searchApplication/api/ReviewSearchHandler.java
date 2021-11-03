@@ -1,7 +1,8 @@
 package searchApplication.api;
 
 import handler.Handler;
-import searchApplication.invertedIndex.FileData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import searchApplication.invertedIndex.FileDataOps;
 import server.HTTPConstants;
 import server.HTTPRequest;
@@ -9,20 +10,20 @@ import server.HTTPResponse;
 
 
 /**
+ * ReviewSearchHandler class implements Handler Interface
+ * and handles httpRequest to SearchApplication Server with path /reviewsearch
  * @author nilimajha
  */
 public class ReviewSearchHandler implements Handler {
-//    private ReviewFileData reviewFileData;
-//    private QAFileData qaFileData;
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(FindHandler.class);
 
-//    public ReviewSearchHandler (ReviewFileData reviewInvertedIndex, QAFileData qaInvertedIndex) {
-//        this.reviewFileData = reviewInvertedIndex;
-//        this.qaFileData = qaInvertedIndex;
-//    }
-
+    /**
+     * forwards request to the appropriate method.
+     * @param httpRequest
+     * @return httpResponse
+     */
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
-
         if (httpRequest.getMethod().equals(HTTPConstants.GET)) {
             return doGet();
         } else {
@@ -30,6 +31,10 @@ public class ReviewSearchHandler implements Handler {
         }
     }
 
+    /**
+     * handles GET request made with /reviewsearch path to SearchApplication.
+     * @return httpResponse
+     */
     public HTTPResponse doGet() {
         String responseProtocol = HTTPConstants.PROTOCOL;
         String responseStatusCode = HTTPConstants.CODE_OK;
@@ -39,6 +44,10 @@ public class ReviewSearchHandler implements Handler {
         return httpResponse;
     }
 
+    /**
+     * sends well-formed HTML response body of GET request.
+     * @return HTMLResponseMessage
+     */
     private String generateHTMLResponseForGET() {
         String HTMLResponseMessage = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
@@ -59,8 +68,11 @@ public class ReviewSearchHandler implements Handler {
         return HTMLResponseMessage;
     }
 
+    /**
+     * handles POST request made with /reviewsearch path to SearchApplication.
+     * @return httpResponse
+     */
     public HTTPResponse doPost(String httpRequestMessage) {
-
         String responseProtocol = HTTPConstants.PROTOCOL;
         String responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
@@ -72,6 +84,12 @@ public class ReviewSearchHandler implements Handler {
         return httpResponse;
     }
 
+    /**
+     * Dynamically Generates HTMLResponse body for POST request.
+     * @param title
+     * @param body
+     * @return HTMLResponseMessage
+     */
     private String generateHTMLResponseForPOST(String title, String body) {
         String HTMLResponseMessage = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
