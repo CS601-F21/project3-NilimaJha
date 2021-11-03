@@ -1,6 +1,8 @@
 package chatApplication.api;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import handler.Handler;
 import server.HTTPConstants;
 import server.HTTPRequest;
@@ -77,7 +79,7 @@ public class SlackBotHandler implements Handler {
         String bodyValue = null;
         try {
             System.out.println("Decoding the message. =" +httpRequestMessage);
-            bodyValue = URLDecoder.decode(httpRequestMessage.substring(httpRequestMessage.indexOf("=")+1, httpRequestMessage.length()), StandardCharsets.UTF_8.toString());
+            bodyValue = URLDecoder.decode(httpRequestMessage.substring(httpRequestMessage.indexOf("=")+1), StandardCharsets.UTF_8.toString());
             System.out.println("Decoded message.= " +bodyValue);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -98,7 +100,7 @@ public class SlackBotHandler implements Handler {
         requestBody.addProperty("text", bodyValue);
         String body = requestBody.toString();
         System.out.println("[Thread # " + threadId + "]: " + "i~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        String slackPostResponse = doPostOnSlack(url, headers, body);
+        SlackResponse slackPostResponse = doPostOnSlack(url, headers, body);
 
         //parse response;
         System.out.println("[Thread # " + threadId + "]: " + slackPostResponse);
@@ -108,7 +110,7 @@ public class SlackBotHandler implements Handler {
         String responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
-        String HTMLResponseMessage = "<!DOCTYPE html>\n" +
+        String HTMLResponseMessage1 = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
                 "<head>\n" +
                 "  <title>Slack Bot</title>\n" +
@@ -116,16 +118,43 @@ public class SlackBotHandler implements Handler {
                 "<body>\n" +
                 "\n" +
                 "<h1><u>Slack Bot</u></h1>" +
-                "<p> Message successfully posted on slack channel!" +
+                "<p> MESSAGE <b>'" + bodyValue + "'</b> SENT SUCCESSFULLY ON SLACK CHANNEL!</p>" +
+                "<form action=\"/slackbot\" method=\"post\">\n" +
+                "  <label for=\"msg\"><b>Send another Message:</b></label><br/><br/>\n" +
+                "  <input type=\"text\" id=\"message\" name=\"message\"/><br/><br/>\n" +
+                "  <input type=\"submit\" value=\"Submit\"/>\n" +
+                "</form>" +
                 "\n" +
                 "</body>\n" +
                 "</html>";
-        httpResponse.setResponseMessage(HTMLResponseMessage);
+
+        String HTMLResponseMessage2 = "<!DOCTYPE html>\n" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
+                "<head>\n" +
+                "  <title>Slack Bot</title>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "\n" +
+                "<h1><u>Slack Bot</u></h1>" +
+                "<p> MESSAGE <b>'" + bodyValue + "'</b> WAS NOT SENT ON THE SLACK CHANNEL!</p>" +
+                "<p>Reason : " + slackPostResponse.getError() + "</p>" +
+                "\n" +
+                "</body>\n" +
+                "</html>";
+
+
+        if (slackPostResponse.isOk()) {
+            httpResponse.setResponseMessage(HTMLResponseMessage1);
+        } else {
+            httpResponse.setResponseMessage(HTMLResponseMessage2);
+        }
+        //httpResponse.setResponseMessage(HTMLResponseMessage);
         return httpResponse;
 
     }
 
-    public static String doPostOnSlack(String url, Map<String, String> headers, String body) {
+    public static SlackResponse doPostOnSlack(String url, Map<String, String> headers, String body) {
+        SlackResponse slackResponse = new SlackResponse();
         try {
             HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(url));
             builder = setHeaders(builder, headers);
@@ -134,11 +163,11 @@ public class SlackBotHandler implements Handler {
             System.out.println("B4 send");
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println("after send");
-            return response.body();
+            slackResponse = parseSlackResponse(response.body());
         } catch(URISyntaxException | IOException | InterruptedException e) {
             System.err.println(e.getMessage());
-            return null;
         }
+        return slackResponse;
     }
 
     private static HttpRequest.Builder setHeaders (HttpRequest.Builder builder, Map < String, String > headers){
@@ -150,8 +179,23 @@ public class SlackBotHandler implements Handler {
         return builder;
     }
 
-    private String parseSlackResponse (String slackPostResponse) {
-        return slackPostResponse;
+    private static SlackResponse parseSlackResponse (String slackPostResponse) {
+        Gson gson = new Gson();
+        SlackResponse slackResponse = new SlackResponse();
+        try {
+            slackResponse = gson.fromJson(slackPostResponse, SlackResponse.class);
+        }catch(JsonSyntaxException e) {
+            // Commenting The JsonSyntaxException error
+            //System.out.println("Caught a JsonSyntaxException, ignoring this json:" + jsonStr);
+            //System.out.println(e);
+
+            // Reading next line, to skip above Exception.
+            //jsonStr = bufferedReader.readLine();
+
+            //invalid response from slack.
+
+        }
+        return slackResponse;
     }
 }
 
