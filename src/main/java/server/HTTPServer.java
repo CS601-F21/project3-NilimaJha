@@ -1,8 +1,9 @@
 package server;
 
 import handler.Handler;
-import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HTTPServer {
-    private static final Logger LOGGER = LogManager.getLogger(HTTPServer.class);
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(HTTPServer.class);
 
     private HashMap<String, Handler> pathToHandlerMap;
     private int port;

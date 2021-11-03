@@ -4,15 +4,16 @@ import server.httpDefaultHandlers.BadRequestHandler;
 import handler.Handler;
 import server.httpDefaultHandlers.FileNotFoundHandler;
 import server.httpDefaultHandlers.MethodNotAllowedHandler;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 
 public class HTTPConnection implements Runnable {
-    private static final Logger LOGGER = LogManager.getLogger(HTTPConnection.class);
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(HTTPConnection.class);
 
     private Socket connectionChannel;
     private HashMap<String, Handler> pathToHandlerMap;
