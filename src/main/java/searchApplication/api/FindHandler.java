@@ -12,14 +12,14 @@ import server.HTTPResponse;
  * @author nilimajha
  */
 public class FindHandler implements Handler {
-    private ReviewFileData reviewFileData;
-    private QAFileData qaFileData;
+//    private ReviewFileData reviewFileData;
+//    private QAFileData qaFileData;
 
 
-    public FindHandler (ReviewFileData reviewInvertedIndex, QAFileData qaInvertedIndex) {
-        this.reviewFileData = reviewInvertedIndex;
-        this.qaFileData = qaInvertedIndex;
-    }
+//    public FindHandler (ReviewFileData reviewInvertedIndex, QAFileData qaInvertedIndex) {
+////        this.reviewFileData = reviewInvertedIndex;
+////        this.qaFileData = qaInvertedIndex;
+//    }
 
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
@@ -68,7 +68,7 @@ public class FindHandler implements Handler {
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         // extracting asin from request query.
         String ASIN = httpRequestMessage.substring(httpRequestMessage.indexOf("=") + 1);
-        String responseData = new FileDataOps(reviewFileData, qaFileData).findAsin(ASIN);
+        String responseData = new FileDataOps().findAsin(ASIN);
         httpResponse.setResponseMessage(generateHTMLResponseForPOST("Find ASIN", responseData));
         return httpResponse;
     }

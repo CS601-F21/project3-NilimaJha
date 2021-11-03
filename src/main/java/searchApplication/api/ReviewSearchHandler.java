@@ -1,9 +1,8 @@
 package searchApplication.api;
 
 import handler.Handler;
+import searchApplication.invertedIndex.FileData;
 import searchApplication.invertedIndex.FileDataOps;
-import searchApplication.invertedIndex.QAFileData;
-import searchApplication.invertedIndex.ReviewFileData;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
@@ -13,13 +12,13 @@ import server.HTTPResponse;
  * @author nilimajha
  */
 public class ReviewSearchHandler implements Handler {
-    private ReviewFileData reviewFileData;
-    private QAFileData qaFileData;
+//    private ReviewFileData reviewFileData;
+//    private QAFileData qaFileData;
 
-    public ReviewSearchHandler (ReviewFileData reviewInvertedIndex, QAFileData qaInvertedIndex) {
-        this.reviewFileData = reviewInvertedIndex;
-        this.qaFileData = qaInvertedIndex;
-    }
+//    public ReviewSearchHandler (ReviewFileData reviewInvertedIndex, QAFileData qaInvertedIndex) {
+//        this.reviewFileData = reviewInvertedIndex;
+//        this.qaFileData = qaInvertedIndex;
+//    }
 
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
@@ -68,7 +67,7 @@ public class ReviewSearchHandler implements Handler {
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         // extracting asin from request query.
         String term = httpRequestMessage.substring(httpRequestMessage.indexOf("=") + 1);
-        String responseData = new FileDataOps(reviewFileData, qaFileData).reviewSearch(term);
+        String responseData = new FileDataOps().reviewSearch(term);
         httpResponse.setResponseMessage(generateHTMLResponseForPOST("Review Search", responseData));
         return httpResponse;
     }
