@@ -1,22 +1,37 @@
 package server.httpDefaultHandlers;
 
 import handler.Handler;
-import searchApplication.invertedIndex.FileDataOps;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * ShutdownHandler handles request with /shutdown
+ * @author nilimajha
+ */
 public class ShutDownHandler implements Handler {
 
+    /**
+     * assign the request to the appropriate method as per the request.
+     * @param httpRequest
+     * @return
+     */
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
-        return null;
+        if (httpRequest.getMethod().equals(HTTPConstants.GET)) {
+            return doGet();
+        } else {
+            return doPost(httpRequest.getRequestPayload());
+        }
     }
 
+    /**
+     * handles GET request made with /shutdown path to server.
+     * @return httpResponse
+     */
     public HTTPResponse doGet() {
         String responseProtocol = HTTPConstants.PROTOCOL;
         String responseStatusCode = HTTPConstants.CODE_OK;
@@ -26,6 +41,10 @@ public class ShutDownHandler implements Handler {
         return httpResponse;
     }
 
+    /**
+     * returns the response body for doGet method.
+     * @return htmlResponseMessage
+     */
     private String generateHTMLResponseForGET() {
         String HTMLResponseMessage = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
@@ -48,8 +67,12 @@ public class ShutDownHandler implements Handler {
         return HTMLResponseMessage;
     }
 
+    /**
+     * handles POST request body made with /shutdown path to server.
+     * @param httpRequestMessage
+     * @return httpResponse
+     */
     public HTTPResponse doPost(String httpRequestMessage) {
-
         String responseProtocol = HTTPConstants.PROTOCOL;
         String responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
@@ -62,12 +85,16 @@ public class ShutDownHandler implements Handler {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-//        String ASIN = httpRequestMessage.substring(httpRequestMessage.indexOf("=") + 1);
-//        //String responseData = new FileDataOps(reviewFileData, qaFileData).findAsin(ASIN);
-//        httpResponse.setResponseMessage(generateHTMLResponseForPOST("Find ASIN", responseData));
         return httpResponse;
     }
 
+    /**
+     * generateHTMLResponseForPOST() dynamically generates
+     * response body in XHTML format
+     * @param title
+     * @param body
+     * @return HTMLResponseMessage
+     */
     private String generateHTMLResponseForPOST(String title, String body) {
         String HTMLResponseMessage = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +

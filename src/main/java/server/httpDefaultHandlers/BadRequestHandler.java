@@ -7,9 +7,18 @@ import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
 
+/**
+ * Default handler that handles the request that is not well-formed or missing expected information.
+ *@author nilimajha
+ */
 public class BadRequestHandler implements Handler {
     private static final Logger LOGGER = LogManager.getLogger(BadRequestHandler.class);
 
+    /**
+     * returns 400 badRequest httpResponse
+     * @param httpRequest
+     * @return httpResponse
+     */
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
         LOGGER.info("Handling Request with Path :" + httpRequest.getPath());

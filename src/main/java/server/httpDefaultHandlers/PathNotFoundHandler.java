@@ -7,10 +7,19 @@ import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
 
-public class FileNotFoundHandler implements Handler {
-    private static final Logger LOGGER = LogManager.getLogger(FileNotFoundHandler.class);
+/**
+ * Default handler that handles the request with path that is not supported.
+ * @author nilimajha
+ */
+public class PathNotFoundHandler implements Handler {
+    private static final Logger LOGGER = LogManager.getLogger(PathNotFoundHandler.class);
 
-
+    /**
+     * 405 Handle method with path other than /find,
+     * /reviewsearch, /shutdown, /slackbot
+     * @param httpRequest
+     * @return httpResponse
+     */
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
         LOGGER.info("Handling Request with Path :" + httpRequest.getMethod());

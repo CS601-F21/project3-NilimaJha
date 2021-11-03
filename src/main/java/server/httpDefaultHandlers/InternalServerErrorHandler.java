@@ -7,10 +7,18 @@ import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
 
+/**
+ * Default handler handles the request when some unexpected error occur during that request processing.
+ * @author nilimajha
+ */
 public class InternalServerErrorHandler implements Handler {
     private static final Logger LOGGER = LogManager.getLogger(InternalServerErrorHandler.class);
 
-
+    /**
+     * Handles request when some unexpected error occurs.
+     * @param httpRequest
+     * @return
+     */
     @Override
     public HTTPResponse handle (HTTPRequest httpRequest) {
 //        LOGGER.info("Handling Request with Method :" + httpRequest.getMethod());

@@ -1,5 +1,9 @@
 package searchApplication.invertedIndex;
 
+/**
+ * 
+ * @author nilimajha
+ */
 public class FileData {
     private static ReviewFileData reviewFileData;
     private static QAFileData qaFileData;

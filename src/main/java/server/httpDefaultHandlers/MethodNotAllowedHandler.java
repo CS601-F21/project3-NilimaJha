@@ -8,10 +8,18 @@ import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
 
+/**
+ * Default handler handles the request with not supported method.
+ * @author nilimajha
+ */
 public class MethodNotAllowedHandler implements Handler {
     private static final Logger LOGGER = LogManager.getLogger(MethodNotAllowedHandler.class);
 
-
+    /**
+     * handles request with method other than GET and POST.
+     * @param httpRequest
+     * @return httpResponse
+     */
     @Override
     public HTTPResponse handle(HTTPRequest httpRequest) {
         LOGGER.info("Handling Request with Method :" + httpRequest.getMethod());
