@@ -22,8 +22,8 @@ public class FileProcessor {
      * @param fileName  File to read.
      * @throws IOException
      */
-    public ReviewFileData reviewFileProcessor(String fileName) throws IOException {
-        ReviewFileData reviewFileData = new ReviewFileData();
+    public void reviewFileProcessor(String fileName) throws IOException {
+        ReviewFileData reviewFileData = FileData.getReviewFileData();
 
         InvertedIndex reviewInvertedIndex = new InvertedIndex();
         HashMap<String, ArrayList<Review>> asinReviewMap = new HashMap<>();
@@ -69,7 +69,7 @@ public class FileProcessor {
             reviewFileData.setAsinReviewMap(asinReviewMap);
             reviewFileData.setReviewList(reviewList);
         }
-        return reviewFileData;
+        //return reviewFileData;
     }
 
     /**
@@ -82,7 +82,7 @@ public class FileProcessor {
      * @throws IOException
      */
     public QAFileData qaFileProcessor(String fileName) throws IOException {
-        QAFileData qaFileData = new QAFileData();
+        QAFileData qaFileData = FileData.getQAFileData();
 
         InvertedIndex qaInvertedIndex = new InvertedIndex();
         HashMap<String, ArrayList<QA>> qaAsinDocMap = new HashMap<>();
