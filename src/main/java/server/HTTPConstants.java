@@ -1,8 +1,9 @@
 package server;
 
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * A helper class to store various constants used for the HTTP server.
+ * @author nilimajha
+ */
 public class HTTPConstants {
     public static final String GET = "GET";
     public static final String POST = "POST";

@@ -1,7 +1,6 @@
 package server;
 
 import handler.Handler;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import java.io.*;
@@ -11,6 +10,14 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * HTTPServer Class serves the request of client by waiting for request,
+ * assigning it to the appropriate handler and
+ * sending response back to the client.
+ * It uses thread pool to handle multiple client request at a time.
+ *
+ * @author nilimajha
+ */
 public class HTTPServer {
     private static final Logger LOGGER = (Logger) LogManager.getLogger(HTTPServer.class);
 
@@ -22,6 +29,10 @@ public class HTTPServer {
 
     /**
      * Constructor
+     * assign the port number to attribute port,
+     * sets running value to true and
+     * initializes pathToHandlerMap and threadPool.
+     *
      * @param port
      */
     public HTTPServer (int port) {
@@ -43,25 +54,25 @@ public class HTTPServer {
         }
     }
 
-
+    /**
+     * method startup()
+     * starts the HTTPServer, accepts the request and assign it to the thread-pool
+     */
     public void startup() {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
-            int i = 1; // To keep track of requests
+
             while (running) {
                 LOGGER.info("Server listening on port " + port);
-//                System.out.println(i + ": Server is waiting for input on "+ port + "....");
                 try {
                     Socket connectionSocket = serverSocket.accept();
                     LOGGER.info("New connection from " + connectionSocket.getInetAddress());
                     System.out.println("New connection from " + connectionSocket.getInetAddress());
                     this.threadPool.execute(new HTTPConnection(connectionSocket, this.pathToHandlerMap));
-                    LOGGER.info(i + ">> Request Assigned to thread pool.");
-//                    System.out.println("Request Assigned to thread pool.");
+                    LOGGER.info(">> Request Assigned to thread pool.");
                 } catch (IOException e) {
                     LOGGER.error("Caught IOException : " + e);
                 }
-                i++;
             }
         }  catch (IOException e) {
             LOGGER.error("Caught IOException : " + e);
