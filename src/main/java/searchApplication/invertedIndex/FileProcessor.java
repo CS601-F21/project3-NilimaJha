@@ -11,6 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * FileProcessor class contains
+ * a method that reads from review data file and fills ReviewFileData.
+ * and a method that reads from QA data file and fills QAFileData.
+ * @author nilimajha
+ */
 public class FileProcessor {
 
     /**
@@ -23,7 +29,7 @@ public class FileProcessor {
      * @throws IOException
      */
     public void reviewFileProcessor(String fileName) throws IOException {
-        ReviewFileData reviewFileData = FileData.getReviewFileData();
+        ReviewFileData reviewFileData = FileDataInitializer.getReviewFileData();
 
         InvertedIndex reviewInvertedIndex = new InvertedIndex();
         HashMap<String, ArrayList<Review>> asinReviewMap = new HashMap<>();
@@ -82,7 +88,7 @@ public class FileProcessor {
      * @throws IOException
      */
     public QAFileData qaFileProcessor(String fileName) throws IOException {
-        QAFileData qaFileData = FileData.getQAFileData();
+        QAFileData qaFileData = FileDataInitializer.getQAFileData();
 
         InvertedIndex qaInvertedIndex = new InvertedIndex();
         HashMap<String, ArrayList<QA>> qaAsinDocMap = new HashMap<>();

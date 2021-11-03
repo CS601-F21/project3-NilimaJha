@@ -1,15 +1,22 @@
 package searchApplication.invertedIndex;
 
 /**
- * 
+ *
  * @author nilimajha
  */
-public class FileData {
+public class FileDataInitializer {
     private static ReviewFileData reviewFileData;
     private static QAFileData qaFileData;
 
-    private FileData () {}
+    /**
+     * Constructor
+     */
+    private FileDataInitializer() {}
 
+    /**
+     *
+     * @return
+     */
     public synchronized static ReviewFileData getReviewFileData() {
         if (reviewFileData == null) {
             reviewFileData = new ReviewFileData();
@@ -17,6 +24,10 @@ public class FileData {
         return reviewFileData;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized static QAFileData getQAFileData() {
         if (qaFileData == null) {
             qaFileData = new QAFileData();

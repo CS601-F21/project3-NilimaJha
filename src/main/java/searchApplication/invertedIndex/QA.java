@@ -1,5 +1,9 @@
 package searchApplication.invertedIndex;
 
+/**
+ * QA Class for the QA json objects of the QA File.
+ * @author nilimajha
+ */
 public class QA {
     private String questionType;
     private String asin;
@@ -33,7 +37,6 @@ public class QA {
 
     /**
      * getAsin() is a getter method for the attribute asin
-     *
      * @return asin
      */
     public String getAsin() {

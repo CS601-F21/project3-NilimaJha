@@ -1,5 +1,9 @@
 package searchApplication.invertedIndex;
 
+/**
+ * Review Class for the Review json objects of the Review File.
+ * @author nilimajha
+ */
 public class Review {
     private String reviewerID;
     private String asin;
@@ -24,7 +28,6 @@ public class Review {
      * @param unixReviewTime    long
      * @param reviewTime    String
      */
-
     public Review(String reviewerID, String asin, String reviewerName, int[] helpful, String reviewText,
                   float overall, String summary, long unixReviewTime, String reviewTime) {
         this.reviewerID = reviewerID;

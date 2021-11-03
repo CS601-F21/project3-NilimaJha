@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * InvertedIndex that maps alphanumeric word of a string to its documentId.
+ * @author nilimajha
+ */
 public class InvertedIndex {
     private HashMap<String, HashMap<Integer, Integer>> wordDocMap= new HashMap<>();
 
@@ -17,7 +21,6 @@ public class InvertedIndex {
      * @param str   String from which words are
      */
     public void createAndAddIndex(int docID, String str) {
-
         String[] stringArray = str.split(" ");
         for(String word: stringArray) {
             //removing all non-alphanumeric characters and converting the string to lower case.
@@ -110,14 +113,11 @@ public class InvertedIndex {
         return partialWordDocIDs;
     }
 
-    public boolean containsKey (String key) {
-        if (wordDocMap.containsKey(key)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    /**
+     * Returns a hashmap that contains the word in its text .
+     * @param key
+     * @return
+     */
     public HashMap<Integer, Integer> get (String key) {
         return wordDocMap.get(key);
     }

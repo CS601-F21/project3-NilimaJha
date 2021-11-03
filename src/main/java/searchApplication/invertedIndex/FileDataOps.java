@@ -1,18 +1,14 @@
 package searchApplication.invertedIndex;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
+/**
+ * Class FileDataOps contains methods that do operations on the reviewFilData and QAFileData.
+ * @author nilimajha
+ */
 public class FileDataOps {
-//    private ReviewFileData reviewFileData;
-//    private QAFileData qaFileData;
     private String alphanumeric = "^[A-Za-z0-9]*$";  // Common expression to check
     private String separator = "\n" + "=".repeat(100) + "\n" ;  // Using to separate outputs
-
-//    public FileDataOps() {
-//        this.reviewFileData = FileData.getReviewFileData();
-//        this.qaFileData = FileData.getQAFileData();
-//    }
 
     /**
      * method findAsin()
@@ -32,31 +28,32 @@ public class FileDataOps {
             findAsinResult.append(this.separator);
             findAsinResult.append("Invalid ASIN. Please enter a valid ASIN.");
             findAsinResult.append(this.separator);
-        }else {
-            if (!FileData.getReviewFileData().getAsinReviewMap().containsKey(asin) && !FileData.getQAFileData().getAsinQAMap().containsKey(asin)) {
+        } else {
+            if (!FileDataInitializer.getReviewFileData().getAsinReviewMap().containsKey(asin) &&
+                    !FileDataInitializer.getQAFileData().getAsinQAMap().containsKey(asin)) {
                 findAsinResult.append(this.separator);
                 findAsinResult.append("No Reviews or QA associated with the ASIN: " + asin );
                 findAsinResult.append(this.separator);
 
-            }else {
-                if(FileData.getReviewFileData().getAsinReviewMap().containsKey(asin)) {
+            } else {
+                if(FileDataInitializer.getReviewFileData().getAsinReviewMap().containsKey(asin)) {
                     findAsinResult.append(this.separator);
                     findAsinResult.append("List of all ReviewText for ASIN: " + asin );
                     findAsinResult.append(this.separator);
                     //printing the reviewText of the Review object associated with the entered ASIN.
-                    for(Review currentReviewObj: FileData.getReviewFileData().getAsinReviewMap().get(asin)) {
+                    for(Review currentReviewObj: FileDataInitializer.getReviewFileData().getAsinReviewMap().get(asin)) {
                         findAsinResult.append("ReviewText: " + currentReviewObj.getReviewText() + "\n\n");
                     }
-                }else {
+                } else {
                     findAsinResult.append(this.separator);
                     findAsinResult.append("No Reviews associated with the ASIN: " + asin );
                     findAsinResult.append(this.separator);
                 }
-                if(FileData.getQAFileData().getAsinQAMap().containsKey(asin)) {
+                if(FileDataInitializer.getQAFileData().getAsinQAMap().containsKey(asin)) {
                     findAsinResult.append(this.separator);
                     findAsinResult.append("List of all Question/Answer for ASIN: " + asin );
                     findAsinResult.append(this.separator);
-                    for (QA currentQAObj : FileData.getQAFileData().getAsinQAMap().get(asin)) {
+                    for (QA currentQAObj : FileDataInitializer.getQAFileData().getAsinQAMap().get(asin)) {
                         //printing the question and answer of the QAObject associated with the entered ASIN.
                         findAsinResult.append("Question : " + currentQAObj.getQuestion() + "\n");
                         findAsinResult.append("Answer : " + currentQAObj.getAnswer() + "\n\n");
@@ -80,18 +77,16 @@ public class FileDataOps {
      */
     public String reviewSearch(String word) {
         StringBuilder reviewSearchResult = new StringBuilder();
-//        System.out.println(this.separator);
-
         if (word.matches(this.alphanumeric)) {
             // Storing DocIDs of all the reviews that contains the word.
-            ArrayList<Integer> docIDs = FileData.getReviewFileData().getInvertedIndex().getDocIDsForWord(word);
+            ArrayList<Integer> docIDs = FileDataInitializer.getReviewFileData().getInvertedIndex().getDocIDsForWord(word);
             if (docIDs.size() != 0){
                 reviewSearchResult.append(this.separator);
                 reviewSearchResult.append("Following are the Reviews containing word: '" + word + "'");
                 reviewSearchResult.append(this.separator);
                 //printing reviewText of DocIDs
                 for (int docID : docIDs) {
-                    String reviewText = FileData.getReviewFileData().getReviewList().get(docID).getReviewText();
+                    String reviewText = FileDataInitializer.getReviewFileData().getReviewList().get(docID).getReviewText();
                     reviewSearchResult.append("ReviewText: " + reviewText + "\n\n");
                 }
             } else {
@@ -106,41 +101,41 @@ public class FileDataOps {
         return String.valueOf(reviewSearchResult);
     }
 
-    /**
-     * method reviewPartialSearch() prints
-     * all the reviewText associated with the review document
-     * that even partially matches the given word.
-     *
-     * @param partialWord   partial word from reviewText of the review file.
-     */
-    private void reviewPartialSearch(String partialWord) {
-        System.out.println(this.separator);
-
-        // Validating the input word.
-        if (partialWord.matches(this.alphanumeric)) {
-            // Storing DocIDs of all the document that contains the partial word.
-            ArrayList<Integer> docIDs = FileData.getQAFileData().getInvertedIndex().getDocIDsForPartialWord(partialWord);
-            if (docIDs.size() != 0){
-                int counter = 1;
-                System.out.println("Following are the Reviews containing partial word: '" + partialWord + "'");
-                System.out.println(this.separator);
-                for (int docID : docIDs) {
-                    // Printing reviewText of the review Document that contains the word.
-                    System.out.println("\n" + counter);
-                    System.out.println("ReviewText: " + FileData.getReviewFileData().getReviewList().get(docID).getReviewText());
-                    counter++;
-                }
-            } else {
-                System.out.println("No Available Reviews containing partial word: '" + partialWord + "'");
-            }
-
-        }else {
-            System.out.println("Invalid partial search word: '"
-                    + partialWord
-                    +"', Please remove all non-alphanumeric characters.");
-        }
-        System.out.println(this.separator);
-    }
+//    /**
+//     * method reviewPartialSearch() prints
+//     * all the reviewText associated with the review document
+//     * that even partially matches the given word.
+//     *
+//     * @param partialWord   partial word from reviewText of the review file.
+//     */
+//    private void reviewPartialSearch(String partialWord) {
+//        System.out.println(this.separator);
+//
+//        // Validating the input word.
+//        if (partialWord.matches(this.alphanumeric)) {
+//            // Storing DocIDs of all the document that contains the partial word.
+//            ArrayList<Integer> docIDs = FileData.getQAFileData().getInvertedIndex().getDocIDsForPartialWord(partialWord);
+//            if (docIDs.size() != 0){
+//                int counter = 1;
+//                System.out.println("Following are the Reviews containing partial word: '" + partialWord + "'");
+//                System.out.println(this.separator);
+//                for (int docID : docIDs) {
+//                    // Printing reviewText of the review Document that contains the word.
+//                    System.out.println("\n" + counter);
+//                    System.out.println("ReviewText: " + FileData.getReviewFileData().getReviewList().get(docID).getReviewText());
+//                    counter++;
+//                }
+//            } else {
+//                System.out.println("No Available Reviews containing partial word: '" + partialWord + "'");
+//            }
+//
+//        }else {
+//            System.out.println("Invalid partial search word: '"
+//                    + partialWord
+//                    +"', Please remove all non-alphanumeric characters.");
+//        }
+//        System.out.println(this.separator);
+//    }
 //
     /**
      * method qaSearch() prints
