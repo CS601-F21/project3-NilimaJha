@@ -65,7 +65,7 @@ public class ShutDownHandler implements Handler {
 //        String ASIN = httpRequestMessage.substring(httpRequestMessage.indexOf("=") + 1);
 //        //String responseData = new FileDataOps(reviewFileData, qaFileData).findAsin(ASIN);
 //        httpResponse.setResponseMessage(generateHTMLResponseForPOST("Find ASIN", responseData));
-//        return httpResponse;
+        return httpResponse;
     }
 
     private String generateHTMLResponseForPOST(String title, String body) {
