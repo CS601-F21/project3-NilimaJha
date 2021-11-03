@@ -2,20 +2,30 @@ package searchApplication;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import searchApplication.api.FindHandler;
 import searchApplication.api.ReviewSearchHandler;
 import searchApplication.invertedIndex.FileProcessor;
 import server.HTTPServer;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
- *
+ * SearchApplication server driver class.
  * @author nilimajha
  */
 public class SearchApplication {
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(SearchApplication.class);
+
+    /**
+     * main method of SearchApplication.
+     * HTTPServer for SearchApplication starts here.
+     *
+     * @param argss
+     */
     public static void main(String[] argss) {
+
         String arg = "-input Search_Application_Config.json";
         String[] args = arg.split(" ");
 
@@ -34,6 +44,9 @@ public class SearchApplication {
                         fileProcessor.reviewFileProcessor(reviewFileName);
                         fileProcessor.qaFileProcessor(qaFileName);
                     } catch (IOException e) {
+                        LOGGER.error("IOException occurred while reading from input files!");
+                        LOGGER.error("IOException." + e);
+                        LOGGER.error("Shunting down the SearchApplication...");
                         System.out.println("IOException occurred while reading from input files.");
                         System.out.println("IOException." + e);
                         System.exit(0);
@@ -41,22 +54,24 @@ public class SearchApplication {
                     HTTPServer httpServer = new HTTPServer(port);
                     httpServer.addMapping("/find", new FindHandler());
                     httpServer.addMapping("/reviewsearch", new ReviewSearchHandler());
-                    System.out.println();
-                    System.out.println("Test server starting.");
-                    System.out.println("........................");
+                    LOGGER.info("Starting SearchApplication Server!...");
                     httpServer.startup();
-                    System.out.println("Test server started.");
-                    System.out.println("........................");
-
+                    LOGGER.info("SearchApplication Server Started!...");
                 } else {
+                    LOGGER.error("Missing Data in Config File '" + args[1] + "' !");
+                    LOGGER.error("Shunting down the SearchApplication...");
                     System.out.println("Input Config File does not contain all the required info. Shunting Down the Search App.");
                     System.exit(0);
                 }
             } catch (FileNotFoundException e) {
+                LOGGER.error("Config File '" + args[1] + "' Not Found!");
+                LOGGER.error("Shunting down the SearchApplication...");
                 e.printStackTrace();
                 System.exit(0);
             }
         } else {
+            LOGGER.error("Input Argument received : " + args.toString());
+            LOGGER.error("Invalid Input Argument! \nShunting down the SearchApplication...");
             System.out.println("Invalid Input Argument! \nShunting down the Search App.");
             System.exit(0);
         }
@@ -70,6 +85,7 @@ public class SearchApplication {
      */
     public static boolean inputArgumentIsValid (String[] args) {
         if (args.length == 2 && args[0].equals("-input") && getExtension(args[1]).equals(".json")) {
+            LOGGER.info("Input config file name : " +args[1]);
             return true;
         }else {
             return false;
@@ -92,9 +108,11 @@ public class SearchApplication {
     }
 
     /**
+     * method readInputConfigFile()
+     * reads from InputConfigFile and extracts information from it.
      *
      * @param inputConfigFileName
-     * @return
+     * @return searchAppConfigDataObj
      * @throws FileNotFoundException
      */
     public static SearchAppConfigData readInputConfigFile (String inputConfigFileName) throws FileNotFoundException {
@@ -107,9 +125,11 @@ public class SearchApplication {
             try {
                 searchAppConfigDataObj = gson.fromJson(line, SearchAppConfigData.class);
             } catch (JsonSyntaxException e) {
+                LOGGER.error("JsonSyntaxException occurred: " + e);
                 e.printStackTrace();
             }
         } catch (IOException e) {
+            LOGGER.error("IOException occurred occurred: " + e);
             e.printStackTrace();
         }
         return searchAppConfigDataObj;
