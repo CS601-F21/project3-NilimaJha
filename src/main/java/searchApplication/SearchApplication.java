@@ -8,6 +8,8 @@ import searchApplication.api.FindHandler;
 import searchApplication.api.ReviewSearchHandler;
 import searchApplication.invertedIndex.FileProcessor;
 import server.HTTPServer;
+import server.httpDefaultHandlers.ShutDownHandler;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -26,7 +28,7 @@ public class SearchApplication {
      */
     public static void main(String[] argss) {
 
-        String arg = "-input Search_Application_Config.json";
+        String arg = "-input Search_Application_config.json";
         String[] args = arg.split(" ");
 
         String reviewFileName;
@@ -46,33 +48,30 @@ public class SearchApplication {
                     } catch (IOException e) {
                         LOGGER.error("IOException occurred while reading from input files!");
                         LOGGER.error("IOException." + e);
-                        LOGGER.error("Shunting down the SearchApplication...");
-                        System.out.println("IOException occurred while reading from input files.");
-                        System.out.println("IOException." + e);
+                        LOGGER.error("Shunting down the SearchApplication.");
                         System.exit(0);
                     }
                     HTTPServer httpServer = new HTTPServer(port);
                     httpServer.addMapping("/find", new FindHandler());
                     httpServer.addMapping("/reviewsearch", new ReviewSearchHandler());
-                    LOGGER.info("Starting SearchApplication Server!...");
+                    httpServer.addMapping("/shutdown", new ShutDownHandler());
+                    LOGGER.info("Starting SearchApplication Server!.");
                     httpServer.startup();
-                    LOGGER.info("SearchApplication Server Started!...");
+                    LOGGER.info("SearchApplication Server Stopped!.");
                 } else {
                     LOGGER.error("Missing Data in Config File '" + args[1] + "' !");
-                    LOGGER.error("Shunting down the SearchApplication...");
-                    System.out.println("Input Config File does not contain all the required info. Shunting Down the Search App.");
+                    LOGGER.error("Shunting down the SearchApplication.");
                     System.exit(0);
                 }
             } catch (FileNotFoundException e) {
                 LOGGER.error("Config File '" + args[1] + "' Not Found!");
-                LOGGER.error("Shunting down the SearchApplication...");
-                e.printStackTrace();
+                LOGGER.error("FileNotFoundException: " + e);
+                LOGGER.error("Shunting down the SearchApplication.");
                 System.exit(0);
             }
         } else {
             LOGGER.error("Input Argument received : " + args.toString());
             LOGGER.error("Invalid Input Argument! \nShunting down the SearchApplication...");
-            System.out.println("Invalid Input Argument! \nShunting down the Search App.");
             System.exit(0);
         }
     }
@@ -126,11 +125,9 @@ public class SearchApplication {
                 searchAppConfigDataObj = gson.fromJson(line, SearchAppConfigData.class);
             } catch (JsonSyntaxException e) {
                 LOGGER.error("JsonSyntaxException occurred: " + e);
-                e.printStackTrace();
             }
         } catch (IOException e) {
             LOGGER.error("IOException occurred occurred: " + e);
-            e.printStackTrace();
         }
         return searchAppConfigDataObj;
     }
