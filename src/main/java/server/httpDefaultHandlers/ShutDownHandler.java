@@ -1,9 +1,13 @@
 package server.httpDefaultHandlers;
 
 import handler.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
+import server.HTTPServer;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +17,7 @@ import java.nio.charset.StandardCharsets;
  * @author nilimajha
  */
 public class ShutDownHandler implements Handler {
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(HTTPServer.class);
 
     /**
      * assign the request to the appropriate method as per the request.
@@ -33,8 +38,9 @@ public class ShutDownHandler implements Handler {
      * @return httpResponse
      */
     public HTTPResponse doGet() {
+        LOGGER.info("Got Request for shutdown of the server!");
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_OK;
+        int responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         httpResponse.setResponseMessage(generateHTMLResponseForGET());
@@ -55,10 +61,8 @@ public class ShutDownHandler implements Handler {
                 "\n" +
                 "<h1><u>Server Shutdown</u></h1>" +
                 "<form action=\"/shutdown\" method=\"post\">\n" +
-                "  <label for=\"msg\"><b>Enter Username:</b></label>\n" +
-                "  <input type=\"text\" id=\"username\" name=\"username\"/><br/><br/>\n" +
-                "  <label for=\"msg\"><b>Enter Password:</b></label>\n" +
-                "  <input type=\"text\" id=\"password\" name=\"password\"/><br/><br/>\n" +
+                "  <label for=\"msg\"><b>Enter Secret Shutdown Command:</b></label>\n" +
+                "  <input type=\"text\" id=\"secretshutdowncommand\" name=\"secretshutdowncommand\"/><br/><br/>\n" +
                 "  <input type=\"submit\" value=\"Submit\"/>\n" +
                 "</form>" +
                 "\n" +
@@ -74,14 +78,22 @@ public class ShutDownHandler implements Handler {
      */
     public HTTPResponse doPost(String httpRequestMessage) {
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_OK;
+        int responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         // extracting asin from request query.
         String bodyValue = null;
-
         try {
-            bodyValue = URLDecoder.decode(httpRequestMessage.substring(httpRequestMessage.indexOf("=")+1, httpRequestMessage.length()), StandardCharsets.UTF_8.toString());
+            bodyValue = URLDecoder.decode(httpRequestMessage.substring(httpRequestMessage.indexOf("=")+1), StandardCharsets.UTF_8.toString());
+            if (bodyValue.equals("Shutd0wn")) {
+                httpResponse.setResponseMessage(generateHTMLResponseForPOST("Server Shutdown Page",
+                        "Server Shutdown Successful!"));
+                HTTPServer.shutdownRequestFlag = 1;
+            } else {
+                httpResponse.setResponseMessage(generateHTMLResponseForPOST("Server Shutdown Page",
+                        "Wrong Shutdown Command !!!"));
+                HTTPServer.shutdownRequestFlag = 0;
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -92,7 +104,6 @@ public class ShutDownHandler implements Handler {
      * generateHTMLResponseForPOST() dynamically generates
      * response body in XHTML format
      * @param title
-     * @param body
      * @return HTMLResponseMessage
      */
     private String generateHTMLResponseForPOST(String title, String body) {
@@ -103,14 +114,7 @@ public class ShutDownHandler implements Handler {
                 "<h2><u>" + title + " </u></h2>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                "<p>" ;
-
-        String[] lines = body.split("\n");
-        for(String line: lines){
-            HTMLResponseMessage += line + "<br/>" ;
-        }
-
-        HTMLResponseMessage += "</p>\n" +
+                "<p><b>" + body + " <b></p>\n" +
                 "</body>\n" +
                 "</html>";
 
