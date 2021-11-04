@@ -17,7 +17,7 @@ public class HTTPResponse {
     private static final Logger LOGGER = (Logger) LogManager.getLogger(HTTPServer.class);
 
     private String protocol;
-    private String statusCode;
+    private int statusCode;
     private String statusMessage;
     private String responseMessage;
 
@@ -28,7 +28,7 @@ public class HTTPResponse {
      * @param statusCode
      * @param statusMessage
      */
-    public HTTPResponse (String protocol, String statusCode, String statusMessage) {
+    public HTTPResponse (String protocol, int statusCode, String statusMessage) {
         this.protocol = protocol;
         this.statusCode = statusCode;
         this.statusMessage = statusMessage;
@@ -39,8 +39,7 @@ public class HTTPResponse {
      * @return
      */
     public String getResponseHeader() {
-        //return protocol + " " + statusCode + " " + statusMessage + "\n" + HTTPConstants.CONNECTION_CLOSE + "\r\n";
-        return protocol + " " + statusCode + " " + statusMessage + "\n\r\n";
+        return protocol + " " + statusCode + " " + statusMessage + "\n" + HTTPConstants.CONNECTION_CLOSE +"\n\r\n";
     }
 
     /**
@@ -55,6 +54,11 @@ public class HTTPResponse {
      * getter for responseMessage of the HTTPResponse.
      * @return responseMessage
      */
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+
     public String getResponseMessage() {
         return responseMessage;
     }
