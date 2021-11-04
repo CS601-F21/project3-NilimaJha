@@ -48,7 +48,7 @@ public class HTTPConnection implements Runnable {
                 PrintWriter outStreamWriter = new PrintWriter
                         (connectionChannel.getOutputStream())) {
             HTTPRequest httpRequest = readRequest(inStreamReader);
-            System.out.println("[Thread # " + threadId + "]: "+ "Returned to run method on HTTPConnection class and now assigning request to appropriate handler.");
+            LOGGER.debug("Returned to run method on HTTPConnection class and now assigning request to appropriate handler.");
             pathHandlerAssigner(httpRequest, outStreamWriter);
         } catch (IOException e) {
             LOGGER.error("[Thread # " + threadId + "]: " + "IN CATCH IOException: " + e);
@@ -64,24 +64,25 @@ public class HTTPConnection implements Runnable {
      * @throws IOException
      */
     public HTTPRequest readRequest(BufferedReader instream) throws IOException {
-        String threadId = Thread.currentThread().getName();
-        LOGGER.info("[Thread # " + threadId + "]: " + "Reading Request of Client :" + this.connectionChannel);
-        System.out.println("[Thread # " + threadId + "]: "+ "Inside ReadRequest method.");
+        LOGGER.info("Reading Request of Client :" + this.connectionChannel);
         HTTPRequest httpRequest = new HTTPRequest();
         String[] HTTPRequestLineArray;
         String currentLine;
 
         currentLine = instream.readLine();
         LOGGER.info("Request Line :" + currentLine);
-        System.out.println("[There Thread # " + threadId + "]: "+  currentLine);
 
         if(currentLine != null){
             HTTPRequestLineArray = currentLine.split("\\s");
-            System.out.println("[Thread # " + threadId + "]: "+ "=========");
+            LOGGER.info("HTTP Request Details -> ");
             for(String s : HTTPRequestLineArray){
-                System.out.println("[Thread # " + threadId + "]: "+ s);
+                LOGGER.info(s);
             }
-            System.out.println("[Thread # " + threadId + "]: "+ "=========");
+
+            if (!HTTPRequestLineArray[2].equals("HTTP/1.1")){
+                httpRequest.setIsValid(false);
+                return httpRequest;
+            }
 
             //validating request and extracting required info.
             if(requestLineValidator(HTTPRequestLineArray)) {
@@ -94,7 +95,7 @@ public class HTTPConnection implements Runnable {
 
             currentLine = instream.readLine();
             while (currentLine != null && currentLine.length() != 0 ) {
-                System.out.println("[Thread # " + threadId + "]: " +  "FOR current HEADER LINE>>: " + currentLine);
+                LOGGER.info("FOR current HEADER LINE>>: " + currentLine);
                 String[] HTTPRequestHeader = currentLine.split(":\\s");
                 if (requestHeaderLineValidator(HTTPRequestHeader)) {
                     httpRequest.putRequestHeaders(HTTPRequestHeader[0], HTTPRequestHeader[1]);
@@ -107,13 +108,10 @@ public class HTTPConnection implements Runnable {
             if (httpRequest.getRequestHeaders().containsKey("Content-Length")) {
                 int contentLength = Integer.parseInt (httpRequest.getRequestHeaders().get("Content-Length"));
                 LOGGER.info("Request contain Message of length : " + contentLength);
-                System.out.println("[ Thread # "+ threadId +" ]: Inside readRequest method of class HTTPConnection and payload length : " + contentLength);
                 char[] bodyArray = new char[contentLength];
                 instream.read (bodyArray, 0, bodyArray.length);
                 httpRequest.setRequestPayload(new String (bodyArray));
-                System.out.println("[ Thread # " + threadId + " ]: Inside readRequest method of class HTTPConnection and payload value is: "+httpRequest.getRequestPayload());
                 LOGGER.info("Request Message Body :" + httpRequest.getRequestPayload());
-                //System.out.println("Request Message Body :" + httpRequest.getRequestPayload());
             }
         } else {
             httpRequest.setIsValid(false);
@@ -136,42 +134,46 @@ public class HTTPConnection implements Runnable {
         } else {
             String method = httpRequest.getMethod();
             String path = httpRequest.getPath();
+            LOGGER.info("PATH = " + path);
             if (path.equals("/find")) {
                 this.validPostQueryKey = "asin=";
             } else if (path.equals("/reviewsearch")) {
-                this.validPostQueryKey = "query=" ;
-            } else if(path.equals("/slackbot")) {
-                this.validPostQueryKey = "message=" ;
+                this.validPostQueryKey = "query=";
+            } else if (path.equals("/slackbot")) {
+                this.validPostQueryKey = "message=";
+            } else if (path.equals("/shutdown")) {
+                this.validPostQueryKey = "secretshutdowncommand=";
+            } else {
+                LOGGER.warn("wrong URI Path provided ");
+                this.validPostQueryKey = "wrongURIPath";
             }
 
-            if(!(method.equals(HTTPConstants.GET) || method.equals(HTTPConstants.POST))) {
+            if (validPostQueryKey == "wrongURIPath"){
+                LOGGER.info("Request Path (" + path + ") is not valid!");
+                LOGGER.info("Assigning the request to FileNotFoundHandler.");
+                httpResponse = new PathNotFoundHandler().handle(httpRequest);
+            } else if(!(method.equals(HTTPConstants.GET) || method.equals(HTTPConstants.POST))) {
                 LOGGER.info("Request Method (" + method + ") is not supported!");
                 LOGGER.info("Assigning the request to MethodNotAllowedHandler.");
                 httpResponse = new MethodNotAllowedHandler().handle(httpRequest);
             } else if (method.equals(HTTPConstants.POST) && !requestPayloadValidator(httpRequest.getRequestPayload())) {
-                System.out.println("[Thread # " + threadId + "]: "+ "********2");
-
                 String httpRequestPayload = httpRequest.getRequestPayload();
-                String query = httpRequestPayload.substring(0,httpRequestPayload.indexOf("=") + 1);
+//                String query = httpRequestPayload.substring(0,httpRequestPayload.indexOf("=") + 1);
                 LOGGER.info("Request Query (" + httpRequestPayload + ")is not valid!");
                 LOGGER.info("Assigning the request to FileNotFoundHandler.");
-                httpResponse = new PathNotFoundHandler().handle(httpRequest);
+                httpResponse = new BadRequestHandler().handle(httpRequest);
             } else if (!pathToHandlerMap.containsKey(path)) {
-                System.out.println("[Thread # " + threadId + "]: "+ "********3");
-
                 LOGGER.info("Request Path (" + path + ") is not valid!");
                 LOGGER.info("Assigning the request to FileNotFoundHandler.");
                 httpResponse = new PathNotFoundHandler().handle(httpRequest);
             } else {
-                System.out.println("[Thread # " + threadId + "]: "+ "********4");
                 LOGGER.info("Request is valid!");
                 httpResponse = pathToHandlerMap.get(path).handle(httpRequest);
             }
         }
-        System.out.println("[Thread # " + threadId + "]: "+ "********5 out");
         //testing if the response in valid i.e. correctly formatted.
         LOGGER.info("Sending Response to the Client!");
-        LOGGER.info("Response to be sent : ");
+        LOGGER.info("Response sent =  ");
         LOGGER.info(httpResponse.getHTTPResponse());
         writer.write(httpResponse.getHTTPResponse());
     }
