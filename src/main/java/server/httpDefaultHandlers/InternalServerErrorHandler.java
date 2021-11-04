@@ -1,8 +1,8 @@
 package server.httpDefaultHandlers;
 
 import handler.Handler;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
@@ -12,7 +12,7 @@ import server.HTTPResponse;
  * @author nilimajha
  */
 public class InternalServerErrorHandler implements Handler {
-    private static final Logger LOGGER = LogManager.getLogger(InternalServerErrorHandler.class);
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(InternalServerErrorHandler.class);
 
     /**
      * Handles request when some unexpected error occurs.
@@ -21,9 +21,8 @@ public class InternalServerErrorHandler implements Handler {
      */
     @Override
     public HTTPResponse handle (HTTPRequest httpRequest) {
-//        LOGGER.info("Handling Request with Method :" + httpRequest.getMethod());
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_SERVER_ERROR;
+        int responseStatusCode = HTTPConstants.CODE_SERVER_ERROR;
         String responseStatusMessage = HTTPConstants.MESSAGE_SERVER_ERROR;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         String responseMessage;

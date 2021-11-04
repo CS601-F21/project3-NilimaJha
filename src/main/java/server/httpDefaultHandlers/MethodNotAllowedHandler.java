@@ -2,8 +2,8 @@ package server.httpDefaultHandlers;
 
 
 import handler.Handler;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
@@ -13,7 +13,7 @@ import server.HTTPResponse;
  * @author nilimajha
  */
 public class MethodNotAllowedHandler implements Handler {
-    private static final Logger LOGGER = LogManager.getLogger(MethodNotAllowedHandler.class);
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(MethodNotAllowedHandler.class);
 
     /**
      * handles request with method other than GET and POST.
@@ -24,7 +24,7 @@ public class MethodNotAllowedHandler implements Handler {
     public HTTPResponse handle(HTTPRequest httpRequest) {
         LOGGER.info("Handling Request with Method :" + httpRequest.getMethod());
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_NOT_ALLOWED;
+        int responseStatusCode = HTTPConstants.CODE_NOT_ALLOWED;
         String responseStatusMessage = HTTPConstants.MESSAGE_NOT_ALLOWED;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         String responseMessage;

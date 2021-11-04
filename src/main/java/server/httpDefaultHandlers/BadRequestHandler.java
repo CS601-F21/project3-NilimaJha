@@ -1,8 +1,8 @@
 package server.httpDefaultHandlers;
 
 import handler.Handler;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
@@ -12,7 +12,7 @@ import server.HTTPResponse;
  *@author nilimajha
  */
 public class BadRequestHandler implements Handler {
-    private static final Logger LOGGER = LogManager.getLogger(BadRequestHandler.class);
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(BadRequestHandler.class);
 
     /**
      * returns 400 badRequest httpResponse
@@ -23,7 +23,7 @@ public class BadRequestHandler implements Handler {
     public HTTPResponse handle(HTTPRequest httpRequest) {
         LOGGER.info("Handling Request with Path :" + httpRequest.getPath());
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_BAD_REQUEST;
+        int responseStatusCode = HTTPConstants.CODE_BAD_REQUEST;
         String responseStatusMessage = HTTPConstants.MESSAGE_BAD_REQUEST;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         String responseMessage;
