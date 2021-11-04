@@ -2,20 +2,18 @@ package searchApplicationTest;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import searchApplication.invertedIndex.FileDataOps;
 import searchApplication.invertedIndex.FileProcessor;
-
-import server.*;
-import server.httpDefaultHandlers.MethodNotAllowedHandler;
-import server.httpDefaultHandlers.PathNotFoundHandler;
+import server.HTTPResponse;
+import server.HTTPTestClient;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SearchApplicationFindTest {
+
+public class SearchApplicationReviewSearchTest {
     public static FileDataOps fileOps;
     public static String PathNotFoundResponse404;
     public static String BadRequestResponse400;
@@ -73,45 +71,43 @@ public class SearchApplicationFindTest {
 
     //for /find
     @Test
-    public void testFindAsinForGETWithCorrectPath() {
+    public void testReviewSearchForGETWithCorrectPath() {
         String expectedResponse = "<!DOCTYPE html>\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
                 "<head>\n" +
-                "  <title>Find ASIN</title>\n" +
+                "  <title>Review Search</title>\n" +
                 "</head>\n" +
                 "<body>\n" +
                 "\n" +
-                "<h1><u>Find ASIN</u></h1>" +
-                "<form action=\"/find\" method=\"post\">\n" +
-                "  <label for=\"msg\"><b>Enter ASIN:</b></label><br/><br/>\n" +
-                "  <input type=\"text\" id=\"asin\" name=\"asin\"/><br/><br/>\n" +
+                "<h1><u>Review Search</u></h1><form action=\"/reviewsearch\" method=\"post\">\n" +
+                "  <label for=\"msg\"><b>Enter Term:</b></label><br/><br/>\n" +
+                "  <input type=\"text\" id=\"query\" name=\"query\"/><br/><br/>\n" +
                 "  <input type=\"submit\" value=\"Submit\"/>\n" +
-                "</form>" +
-                "\n" +
+                "</form>\n" +
                 "</body>\n" +
                 "</html>";
 
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doGet("http://localhost:8080/find") ;
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doGet("http://localhost:8080/reviewsearch") ;
         assertEquals(200, ActualHttpResponse.getStatusCode());
         assertEquals(expectedResponse, ActualHttpResponse.getResponseMessage());
     }
 
     @Test
-    public void testFindAsinForGETWithWrongPath1() {
+    public void testReviewSearchForGETWithWrongPath1() {
         HTTPResponse ActualHttpResponse = HTTPTestClient.doGet("http://localhost:8080/");
         assertEquals(404, ActualHttpResponse.getStatusCode());
         assertEquals(PathNotFoundResponse404, ActualHttpResponse.getResponseMessage());
     }
 
     @Test
-    public void testFindAsinForGETWithWrongPath2() {
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doGet("http://localhost:8080/find?asin=abc");
+    public void testReviewSearchForGETWithWrongPath2() {
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doGet("http://localhost:8080/reviewsearch?query=computer");
         assertEquals(404, ActualHttpResponse.getStatusCode());
         assertEquals( PathNotFoundResponse404, ActualHttpResponse.getResponseMessage());
     }
 
     @Test
-    public void testFindAsinForGETWithWrongPath3() {
+    public void testReviewSearchForGETWithWrongPath3() {
         HTTPResponse ActualHttpResponse = HTTPTestClient.doGet("http://localhost:8080/search");
         assertEquals(404, ActualHttpResponse.getStatusCode());
         assertEquals( PathNotFoundResponse404, ActualHttpResponse.getResponseMessage());
@@ -119,9 +115,9 @@ public class SearchApplicationFindTest {
 
 
     @Test
-    public void testFindAsinForPOSTWithWrongPath() {
+    public void testReviewSearchForPOSTWithWrongPath() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/finder", headers, "asin=120401325X");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/reviewsearcher", headers, "query=120401325X");
         System.out.println(ActualHttpResponse);
         System.out.println(ActualHttpResponse.getStatusCode());
         assertEquals(404, ActualHttpResponse.getStatusCode());
@@ -129,26 +125,50 @@ public class SearchApplicationFindTest {
     }
 
     @Test
-    public void testFindAsinForMethodNotAllowed() {
+    public void testReviewSearchForMethodNotAllowed() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doDelete("http://localhost:8080/find");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doDelete("http://localhost:8080/reviewsearch");
         assertEquals(405, ActualHttpResponse.getStatusCode());
         assertEquals( MethodNotAllowedResponse405, ActualHttpResponse.getResponseMessage());
     }
 
     @Test
-    public void testFindAsinForPOSTWithCorrectPathIncorrectRequest() {
+    public void testReviewSearchForPOSTWithCorrectPathIncorrectRequest1() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, "asinNumber=120401325X");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/reviewsearch", headers, "review=computer");
         assertEquals(400, ActualHttpResponse.getStatusCode());
         assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
     }
 
     @Test
-    public void testFindAsinForPOSTWithCorrectPathCorrectRequest() {
-        String expectedRepose = generateHTMLResponseForPOST("Find ASIN", fileOps.findAsin("120401325X") );
+    public void testReviewSearchForPOSTWithCorrectPathIncorrectRequest2() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, "asin=120401325X");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/reviewsearch", headers, "query-computer");
+        assertEquals(400, ActualHttpResponse.getStatusCode());
+        assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
+    }
+
+    @Test
+    public void testReviewSearchForPOSTWithCorrectPathIncorrectRequest3() {
+        HashMap<String, String> headers = new HashMap<>();
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/reviewsearch", headers, "query = computer");
+        assertEquals(400, ActualHttpResponse.getStatusCode());
+        assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
+    }
+
+    @Test
+    public void testReviewSearchForPOSTWithCorrectPathIncorrectRequest4() {
+        HashMap<String, String> headers = new HashMap<>();
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/reviewsearch", headers, " query=computer");
+        assertEquals(400, ActualHttpResponse.getStatusCode());
+        assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
+    }
+
+    @Test
+    public void testReviewSearchForPOSTWithCorrectPathCorrectRequest() {
+        String expectedRepose = generateHTMLResponseForPOST("Review Search", fileOps.reviewSearch("computer") );
+        HashMap<String, String> headers = new HashMap<>();
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/reviewsearch", headers, "query=computer");
         assertEquals(200, ActualHttpResponse.getStatusCode());
         assertEquals(expectedRepose, ActualHttpResponse.getResponseMessage());
     }
