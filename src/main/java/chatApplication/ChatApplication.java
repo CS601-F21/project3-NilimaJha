@@ -22,12 +22,12 @@ public class ChatApplication {
      * main method of ChatApplication.
      * HTTPServer for ChatApplication starts here.
      *
-     * @param argss
+     * @param args
      */
-    public static void main(String[] argss) {
+    public static void main(String[] args) {
 
-        String arg = "-input Chat_Application_config.json";
-        String[] args = arg.split(" ");
+//        String arg = "-input Chat_Application_config.json";
+//        String[] args = arg.split(" ");
 
         int port;
         if (inputArgumentIsValid(args)) {

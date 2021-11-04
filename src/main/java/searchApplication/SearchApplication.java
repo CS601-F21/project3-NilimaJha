@@ -24,12 +24,12 @@ public class SearchApplication {
      * main method of SearchApplication.
      * HTTPServer for SearchApplication starts here.
      *
-     * @param argss
+     * @param args
      */
-    public static void main(String[] argss) {
+    public static void main(String[] args) {
 
-        String arg = "-input Search_Application_config.json";
-        String[] args = arg.split(" ");
+//        String arg = "-input Search_Application_config.json";
+//        String[] args = arg.split(" ");
 
         String reviewFileName;
         String qaFileName;
@@ -51,6 +51,7 @@ public class SearchApplication {
                         LOGGER.error("Shunting down the SearchApplication.");
                         System.exit(0);
                     }
+                    LOGGER.info("before SearchApplication Server!.");
                     HTTPServer httpServer = new HTTPServer(port);
                     httpServer.addMapping("/find", new FindHandler());
                     httpServer.addMapping("/reviewsearch", new ReviewSearchHandler());

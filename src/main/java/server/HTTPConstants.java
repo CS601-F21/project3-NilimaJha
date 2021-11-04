@@ -31,5 +31,4 @@ public class HTTPConstants {
     public static final int CHAT_APP_PORT = 9090;
     public static final int SEARCH_APP_PORT = 8080;
 
-
 }

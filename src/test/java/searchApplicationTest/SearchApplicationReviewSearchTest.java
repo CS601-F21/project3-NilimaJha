@@ -23,8 +23,8 @@ public class SearchApplicationReviewSearchTest {
     public static void InitializeInvertedIndex() {
         FileProcessor fileProcessor = new FileProcessor();
         try {
-            fileProcessor.reviewFileProcessor("review_Cell_Phones_and_Accessories.json");
-            fileProcessor.qaFileProcessor("qa_Cell_Phones_and_Accessories_5.json");
+            fileProcessor.reviewFileProcessor("review_Cell_Phones_and_Accessories_smaller.json");
+            fileProcessor.qaFileProcessor("qa_Cell_Phones_and_Accessories_5_smaller.json");
         } catch (IOException e) {
             System.out.println("IOException occurred while reading from input files.");
             System.out.println("IOException." + e);
