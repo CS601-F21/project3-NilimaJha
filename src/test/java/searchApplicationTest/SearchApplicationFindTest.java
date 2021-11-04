@@ -199,10 +199,4 @@ public class SearchApplicationFindTest {
         return HTMLResponseMessage;
     }
 
-
-
-
-
-
-
 }

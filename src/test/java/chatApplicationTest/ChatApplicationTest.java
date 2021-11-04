@@ -181,10 +181,4 @@ public class ChatApplicationTest {
         return HTMLResponseMessage;
     }
 
-
-
-
-
-
-
 }

@@ -195,10 +195,4 @@ public class SearchApplicationReviewSearchTest {
         return HTMLResponseMessage;
     }
 
-
-
-
-
-
-
 }
