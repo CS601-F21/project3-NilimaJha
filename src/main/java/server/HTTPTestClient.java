@@ -8,8 +8,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
+/**
+ * Test Helper Class.
+ * @author nilimajha
+ */
 public class HTTPTestClient {
-
 
     /**
      * Execute an HTTP GET for the specified URL and return the
@@ -21,7 +24,15 @@ public class HTTPTestClient {
         return doGet(url, null);
     }
 
-
+    /**
+     * Execute an HTTP GET for the specified URL and return
+     * the body of the response as a String. Allows request
+     * headers to be set.
+     *
+     * @param url
+     * @param headers
+     * @return
+     */
     public static HTTPResponse doGet(String url, Map<String, String> headers) {
         try {
             HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(url));
@@ -96,6 +107,11 @@ public class HTTPTestClient {
 
     }
 
+    /**
+     * returns statusMessage as per the code entered.
+     * @param statusCode
+     * @return
+     */
     public static String statusMessage(int statusCode) {
         if (statusCode == 200) {
             return HTTPConstants.MESSAGE_OK;
@@ -121,6 +137,15 @@ public class HTTPTestClient {
     public static HTTPResponse doDelete(String url) {
         return doDelete(url, null);
     }
+
+    /**
+     * Sends the Delete request to the server, It is just for testing purpose.
+     * Execute an HTTP DELETE for the specified URL and return the body of the
+     *
+     * @param url
+     * @param headers
+     * @return
+     */
     public static HTTPResponse doDelete(String url, Map<String, String> headers) {
         try {
             HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(url));

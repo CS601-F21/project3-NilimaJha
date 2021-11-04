@@ -1,6 +1,5 @@
 package server;
 
-import java.util.HashMap;
 
 /**
  * A helper class to store various constants used for the HTTP server.

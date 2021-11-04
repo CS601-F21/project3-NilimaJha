@@ -105,15 +105,11 @@ public class SlackBotHandler implements Handler {
      * @return httpResponse
      */
     public HTTPResponse doPost(HTTPRequest httpRequest) {
-//        String threadId = Thread.currentThread().getName();
-//        System.out.println("[Thread # " + threadId + "]: " + "in doPost()");
-
         String httpRequestMessage = httpRequest.getRequestPayload();
         Token tokenObj = tokenConfigFileReader(slackTokenFileName);
         String token = tokenObj.getToken();
         String bodyValue = null;
         try {
-           // System.out.println("Decoding the message. =" +httpRequestMessage);
             bodyValue = URLDecoder.decode(httpRequestMessage.substring(httpRequestMessage.indexOf("=")+1), StandardCharsets.UTF_8.toString());
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", "Bearer " +token);
@@ -125,13 +121,7 @@ public class SlackBotHandler implements Handler {
             requestBody.addProperty("channel", slackChannelID);
             requestBody.addProperty("text", bodyValue);
             String body = requestBody.toString();
-            //System.out.println("[Thread # " + threadId + "]: " + "i~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             SlackResponse slackPostResponse = doPostOnSlack(url, headers, body);
-
-            //parse response;
-//        System.out.println("[Thread # " + threadId + "]: " + slackPostResponse);
-//        System.out.println("[Thread # " + threadId + "]: " + "o~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
             String responseProtocol = HTTPConstants.PROTOCOL;
             int responseStatusCode = HTTPConstants.CODE_OK;
             String responseStatusMessage = HTTPConstants.MESSAGE_OK;
@@ -183,7 +173,6 @@ public class SlackBotHandler implements Handler {
             return new InternalServerErrorHandler().handle(httpRequest);
             //return InternalServerErrorHandler
         }
-
     }
 
     /**

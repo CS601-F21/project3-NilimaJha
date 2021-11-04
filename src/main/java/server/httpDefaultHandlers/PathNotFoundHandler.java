@@ -3,7 +3,6 @@ package server.httpDefaultHandlers;
 import handler.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
-import server.HTTPConnection;
 import server.HTTPConstants;
 import server.HTTPRequest;
 import server.HTTPResponse;
@@ -27,7 +26,6 @@ public class PathNotFoundHandler implements Handler {
         String responseProtocol = HTTPConstants.PROTOCOL;
         int responseStatusCode = HTTPConstants.CODE_NOT_FOUND;
         String responseStatusMessage = HTTPConstants.MESSAGE_NOT_FOUND;
-        String responseHeader = HTTPConstants.CONNECTION_CLOSE;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         String responseMessage;
         responseMessage = "<!DOCTYPE html>\n" +

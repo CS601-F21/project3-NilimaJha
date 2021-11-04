@@ -118,6 +118,9 @@ public class ChatApplication {
             LOGGER.error("IOException occurred occurred: " + e);
             e.printStackTrace();
         }
+        LOGGER.info("tokenFileName: " + chatAppConfigData.getTokenFileName() +
+                "\nSlackChannelID: " + chatAppConfigData.getSlackChannelId() +
+                "\nPortNumber: " + chatAppConfigData.getPortNo());
         return chatAppConfigData;
     }
 

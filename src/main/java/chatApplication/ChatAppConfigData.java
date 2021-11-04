@@ -66,7 +66,7 @@ public class ChatAppConfigData {
      * @return boolean
      */
     public boolean isValid () {
-        if (!this.tokenFileName.equals(null) && !this.slackChannelId.equals(null) && this.portNo != HTTPConstants.CHAT_APP_PORT) {
+        if (!this.tokenFileName.equals(null) && !this.slackChannelId.equals(null) && this.portNo == HTTPConstants.CHAT_APP_PORT) {
             if (jsonFileValidator(this.tokenFileName)) {
                 return true;
             } else {

@@ -87,7 +87,7 @@ public class HTTPServer {
     }
 
     /**
-     * shut down thread pool
+     * shutdown server and thread-pool
      */
     public void shutdown() {
         this.running = false;

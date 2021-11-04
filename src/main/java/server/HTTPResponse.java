@@ -58,7 +58,10 @@ public class HTTPResponse {
         return statusCode;
     }
 
-
+    /**
+     * getter for responseMessage.
+     * @return
+     */
     public String getResponseMessage() {
         return responseMessage;
     }

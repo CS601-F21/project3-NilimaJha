@@ -75,7 +75,6 @@ public class FileProcessor {
             reviewFileData.setAsinReviewMap(asinReviewMap);
             reviewFileData.setReviewList(reviewList);
         }
-        //return reviewFileData;
     }
 
     /**
