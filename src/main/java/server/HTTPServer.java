@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * HTTPServer Class serves the request of client by waiting for request,
@@ -23,9 +24,10 @@ public class HTTPServer {
 
     private HashMap<String, Handler> pathToHandlerMap;
     private int port;
-    private boolean running;
+    private volatile boolean running;
     private final int threadPoolSize = 8;
     private ExecutorService threadPool;
+    public static int shutdownRequestFlag = 0 ;
 
     /**
      * Constructor
@@ -50,7 +52,9 @@ public class HTTPServer {
      */
     public void addMapping(String path, Handler handlerType) {
         if (path != null && handlerType != null) {
-            this.pathToHandlerMap.put(path, handlerType);
+            if (path.charAt(0) == '/') {
+                this.pathToHandlerMap.put(path, handlerType);
+            }
         }
     }
 
@@ -66,16 +70,32 @@ public class HTTPServer {
                 LOGGER.info("Server listening on port " + port);
                 try {
                     Socket connectionSocket = serverSocket.accept();
-                    LOGGER.info("New connection from " + connectionSocket.getInetAddress());
-                    System.out.println("New connection from " + connectionSocket.getInetAddress());
-                    this.threadPool.execute(new HTTPConnection(connectionSocket, this.pathToHandlerMap));
-                    LOGGER.info(">> Request Assigned to thread pool.");
+                    if (shutdownRequestFlag == 1) {
+                        shutdown();
+                    } else {
+                        LOGGER.info("New connection from " + connectionSocket.getInetAddress());
+                        this.threadPool.execute(new HTTPConnection(connectionSocket, this.pathToHandlerMap));
+                        LOGGER.info(">> Request Assigned to thread pool.");
+                    }
                 } catch (IOException e) {
                     LOGGER.error("Caught IOException : " + e);
                 }
             }
         }  catch (IOException e) {
             LOGGER.error("Caught IOException : " + e);
+        }
+    }
+
+    /**
+     * shut down thread pool
+     */
+    public void shutdown() {
+        this.running = false;
+        threadPool.shutdown();
+        try {
+            threadPool.awaitTermination(60, TimeUnit.MILLISECONDS);
+        } catch(InterruptedException e) {
+            LOGGER.warn("InterruptedException occurred while shutting down Thread-Pool");
         }
     }
 }
