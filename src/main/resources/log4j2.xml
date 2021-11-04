@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ALL">
     <Appenders>
-        <RollingFile name="LogToRollingFile" fileName="logs/app.log"
+        <RollingFile name="RollingLogFiles" fileName="logs/project3.log"
                      filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
@@ -11,10 +11,13 @@
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
         </RollingFile>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%m%n"/>
+        </Console>
     </Appenders>
     <Loggers>
         <Root level="trace">
-            <AppenderRef ref="LogToRollingFile" level="ALL"/>
+            <AppenderRef ref="RollingLogFiles" level="ALL"/>
         </Root>
     </Loggers>
 </Configuration>
