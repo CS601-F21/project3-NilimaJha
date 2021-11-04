@@ -1,4 +1,4 @@
-package serverTest;
+package searchApplicationTest;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 
-public class HTTPServerTest {
+public class SearchApplicationFindTest {
     public static FileDataOps fileOps;
     public static String PathNotFoundResponse404;
     public static String BadRequestResponse400;
@@ -137,9 +137,33 @@ public class HTTPServerTest {
     }
 
     @Test
-    public void testFindAsinForPOSTWithCorrectPathIncorrectRequest() {
+    public void testFindAsinForPOSTWithCorrectPathIncorrectRequest1() {
         HashMap<String, String> headers = new HashMap<>();
         HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, "asinNumber=120401325X");
+        assertEquals(400, ActualHttpResponse.getStatusCode());
+        assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
+    }
+
+    @Test
+    public void testFindAsinForPOSTWithCorrectPathIncorrectRequest2() {
+        HashMap<String, String> headers = new HashMap<>();
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, "asin = 120401325X");
+        assertEquals(400, ActualHttpResponse.getStatusCode());
+        assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
+    }
+
+    @Test
+    public void testFindAsinForPOSTWithCorrectPathIncorrectRequest3() {
+        HashMap<String, String> headers = new HashMap<>();
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, " asin=120401325X");
+        assertEquals(400, ActualHttpResponse.getStatusCode());
+        assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
+    }
+
+    @Test
+    public void testFindAsinForPOSTWithCorrectPathIncorrectRequest4() {
+        HashMap<String, String> headers = new HashMap<>();
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, "asin-120401325X");
         assertEquals(400, ActualHttpResponse.getStatusCode());
         assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
     }
