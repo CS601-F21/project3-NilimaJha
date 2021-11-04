@@ -170,11 +170,24 @@ public class SearchApplicationFindTest {
 
     @Test
     public void testFindAsinForPOSTWithCorrectPathCorrectRequest() {
-        String expectedRepose = generateHTMLResponseForPOST("Find ASIN", fileOps.findAsin("120401325X") );
+        String testASIN = "120401325X";
+        String expectedReponse = generateHTMLResponseForPOST("Find ASIN", fileOps.findAsin(testASIN) );
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, "asin=120401325X");
+        String body = "asin="+ testASIN;
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, body);
         assertEquals(200, ActualHttpResponse.getStatusCode());
-        assertEquals(expectedRepose, ActualHttpResponse.getResponseMessage());
+        assertEquals(expectedReponse, ActualHttpResponse.getResponseMessage());
+    }
+
+    @Test
+    public void testFindAsinForPOSTWithCorrectPathCorrectRequestInvalidAsin() {
+        String testASIN = "120401325$X";
+        String expectedReponse = generateHTMLResponseForPOST("Find ASIN", fileOps.findAsin(testASIN) );
+        HashMap<String, String> headers = new HashMap<>();
+        String body = "asin="+ testASIN;
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:8080/find", headers, body);
+        assertEquals(200, ActualHttpResponse.getStatusCode());
+        assertEquals(expectedReponse, ActualHttpResponse.getResponseMessage());
     }
 
     private String generateHTMLResponseForPOST(String title, String body) {
