@@ -1,5 +1,7 @@
 package searchApplication;
 
+import server.HTTPConstants;
+
 /**
  * Class searchAppConfigData to store json config file data.
  * @author nilimajha
@@ -64,7 +66,7 @@ public class SearchAppConfigData {
      * @return boolean
      */
     public boolean isValid () {
-        if (!this.reviewFile.equals(null) && !this.qaFile.equals(null) && this.portNo != 0) {
+        if (!this.reviewFile.equals(null) && !this.qaFile.equals(null) && this.portNo == HTTPConstants.SEARCH_APP_PORT) {
             if (jsonFileValidator(this.reviewFile) && jsonFileValidator(this.qaFile)) {
                 return true;
             } else {

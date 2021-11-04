@@ -1,4 +1,4 @@
-package chatApplication.api;
+package chatApplication;
 
 import server.HTTPConstants;
 
@@ -6,7 +6,7 @@ import server.HTTPConstants;
  * Class ChatApplicationConfig to store json config file data.
  * @author nilimajha
  */
-public class ChatApplicationConfigData {
+public class ChatAppConfigData {
     private String tokenFileName;
     private String slackChannelId;
     private int portNo;
