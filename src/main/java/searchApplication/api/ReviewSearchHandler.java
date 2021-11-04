@@ -37,7 +37,7 @@ public class ReviewSearchHandler implements Handler {
      */
     public HTTPResponse doGet() {
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_OK;
+        int responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         httpResponse.setResponseMessage(generateHTMLResponseForGET());
@@ -74,7 +74,7 @@ public class ReviewSearchHandler implements Handler {
      */
     public HTTPResponse doPost(String httpRequestMessage) {
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_OK;
+        int responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         // extracting asin from request query.
@@ -111,7 +111,4 @@ public class ReviewSearchHandler implements Handler {
 
         return HTMLResponseMessage;
     }
-
-
-
 }

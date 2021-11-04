@@ -39,7 +39,7 @@ public class FindHandler implements Handler {
      */
     public HTTPResponse doGet() {
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_OK;
+        int responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         httpResponse.setResponseMessage(generateHTMLResponseForGET());
@@ -79,14 +79,14 @@ public class FindHandler implements Handler {
      * @return
      */
     public HTTPResponse doPost(String httpRequestMessage) {
-
         String responseProtocol = HTTPConstants.PROTOCOL;
-        String responseStatusCode = HTTPConstants.CODE_OK;
+        int responseStatusCode = HTTPConstants.CODE_OK;
         String responseStatusMessage = HTTPConstants.MESSAGE_OK;
         HTTPResponse httpResponse = new HTTPResponse(responseProtocol, responseStatusCode, responseStatusMessage);
         // extracting asin from request query.
         String ASIN = httpRequestMessage.substring(httpRequestMessage.indexOf("=") + 1);
         String responseData = new FileDataOps().findAsin(ASIN);
+        LOGGER.debug("Looking for ASIN=" + ASIN);
         httpResponse.setResponseMessage(generateHTMLResponseForPOST("Find ASIN", responseData));
         return httpResponse;
     }
@@ -118,9 +118,4 @@ public class FindHandler implements Handler {
 
         return HTMLResponseMessage;
     }
-
-
-
-
-
 }
