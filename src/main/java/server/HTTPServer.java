@@ -42,7 +42,6 @@ public class HTTPServer {
         this.running = true;
         this.pathToHandlerMap = new HashMap<>();
         this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
-
     }
 
     /**
