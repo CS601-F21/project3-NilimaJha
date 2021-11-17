@@ -1,6 +1,7 @@
 package searchApplication.api;
 
 import handler.Handler;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import searchApplication.invertedIndex.*;
@@ -109,6 +110,7 @@ public class FindHandler implements Handler {
 
         String[] lines = body.split("\n");
         for(String line: lines){
+            line = StringEscapeUtils.escapeHtml4(line);
             HTMLResponseMessage += line + "<br/>" ;
         }
 

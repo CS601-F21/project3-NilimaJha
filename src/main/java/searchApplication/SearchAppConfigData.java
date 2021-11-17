@@ -7,8 +7,8 @@ import server.HTTPConstants;
  * @author nilimajha
  */
 public class SearchAppConfigData {
-    private String reviewFile;
-    private String qaFile;
+    private String reviewFile = null;
+    private String qaFile = null;
     private int portNo;
 
     /**

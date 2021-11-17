@@ -97,7 +97,7 @@ public class ChatAppConfigData {
      * @return extension
      */
     public String getExtension(String fileName) {
-        String extension = null;
+        String extension = "";
         int index = fileName.lastIndexOf(".");
         if (index > 0 && index < fileName.length() - 1) {
             extension = fileName.substring(index);

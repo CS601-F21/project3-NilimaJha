@@ -2,6 +2,7 @@ package searchApplication.invertedIndex;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * QAFileData class contains the dataStructure related to QA File.

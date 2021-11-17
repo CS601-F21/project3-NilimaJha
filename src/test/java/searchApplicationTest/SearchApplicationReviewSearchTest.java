@@ -1,5 +1,6 @@
 package searchApplicationTest;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import searchApplication.invertedIndex.FileDataOps;
@@ -185,6 +186,7 @@ public class SearchApplicationReviewSearchTest {
 
         String[] lines = body.split("\n");
         for(String line: lines){
+            line = StringEscapeUtils.escapeHtml4(line);
             HTMLResponseMessage += line + "<br/>" ;
         }
 

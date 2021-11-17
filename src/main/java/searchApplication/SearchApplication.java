@@ -28,8 +28,8 @@ public class SearchApplication {
      */
     public static void main(String[] args) {
 
-//        String arg = "-input Search_Application_config.json";
-//        String[] args = arg.split(" ");
+//        String arg = "-input Search_Application_config_smallerFiles.json";
+//        args = arg.split(" ");
 
         String reviewFileName;
         String qaFileName;
@@ -99,7 +99,7 @@ public class SearchApplication {
      * @return extension
      */
     public static String getExtension(String fileName) {
-        String extension = null;
+        String extension = "";
         int index = fileName.lastIndexOf(".");
         if (index > 0 && index < fileName.length() - 1) {
             extension = fileName.substring(index);

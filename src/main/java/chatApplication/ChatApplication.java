@@ -27,7 +27,7 @@ public class ChatApplication {
     public static void main(String[] args) {
 
 //        String arg = "-input Chat_Application_config.json";
-//        String[] args = arg.split(" ");
+//        args = arg.split(" ");
 
         int port;
         if (inputArgumentIsValid(args)) {
@@ -85,7 +85,7 @@ public class ChatApplication {
      * @return extension
      */
     public static String getExtension(String fileName) {
-        String extension = null;
+        String extension = "";
         int index = fileName.lastIndexOf(".");
         if (index > 0 && index < fileName.length() - 1) {
             extension = fileName.substring(index);

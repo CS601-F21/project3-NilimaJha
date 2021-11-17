@@ -101,7 +101,8 @@ public class ChatApplicationTest {
     @Test
     public void testSlackBotForPOSTWithWrongPath() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackboat", headers, "message=INCORRECT PATH");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackboat",
+                headers, "message=INCORRECT PATH");
         System.out.println(ActualHttpResponse);
         System.out.println(ActualHttpResponse.getStatusCode());
         assertEquals(404, ActualHttpResponse.getStatusCode());
@@ -119,7 +120,8 @@ public class ChatApplicationTest {
     @Test
     public void testSlackBotForPOSTWithCorrectPathIncorrectRequest1() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot", headers, "message = INCORRECT=REQUEST1");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot",
+                headers, "message = INCORRECT=REQUEST1");
         assertEquals(400, ActualHttpResponse.getStatusCode());
         assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
     }
@@ -127,7 +129,8 @@ public class ChatApplicationTest {
     @Test
     public void testSlackBotForPOSTWithCorrectPathIncorrectRequest2() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot", headers, " message=INCORRECT=REQUEST2");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot",
+                headers, " message=INCORRECT=REQUEST2");
         assertEquals(400, ActualHttpResponse.getStatusCode());
         assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
     }
@@ -135,7 +138,8 @@ public class ChatApplicationTest {
     @Test
     public void testSlackBotForPOSTWithCorrectPathIncorrectRequest3() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot", headers, " message~INCORRECT=REQUEST3");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot",
+                headers, " message~INCORRECT=REQUEST3");
         assertEquals(400, ActualHttpResponse.getStatusCode());
         assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
     }
@@ -143,18 +147,20 @@ public class ChatApplicationTest {
     @Test
     public void testSlackBotForPOSTWithCorrectPathIncorrectRequest4() {
         HashMap<String, String> headers = new HashMap<>();
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot", headers, "mess=INCORRECT=REQUEST4");
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot",
+                headers, "mess=INCORRECT=REQUEST4");
         assertEquals(400, ActualHttpResponse.getStatusCode());
         assertEquals(BadRequestResponse400, ActualHttpResponse.getResponseMessage());
     }
 
     @Test
     public void testSlackBotForPOSTWithCorrectPathCorrectRequest() {
-        String message = "This is a CORRECT Request Message From ChatApplicationTest, TestResult=PASSED";
+        String message = "Test message from ChatApplication Integration Test.";
         String expectedRepose = generateHTMLResponseForPOST(message);
         HashMap<String, String> headers = new HashMap<>();
         message = "message="+ message;
-        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot", headers, message);
+        HTTPResponse ActualHttpResponse = HTTPTestClient.doPost("http://localhost:9090/slackbot",
+                headers, message);
         assertEquals(200, ActualHttpResponse.getStatusCode());
         assertEquals(expectedRepose, ActualHttpResponse.getResponseMessage());
     }
